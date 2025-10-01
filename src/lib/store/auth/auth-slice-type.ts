@@ -5,10 +5,15 @@ export interface IUserData{
     userName?:string,
     userEmail:string,
     userPassword?:string,
-    token?:string
+    token?:string,
+    OTP?:number | string,
+    newPassword?:string
 }
 
 export interface IUserSliceState{
-    user:IUserData | null,
-    status:Status
+    user:IUserData |null,
+    loginStatus: Status;
+    registerStatus: Status;
+    forgotPasswordStatus: Status;
+    resetPasswordStatus: Status;
 }

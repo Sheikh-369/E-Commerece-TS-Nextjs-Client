@@ -1,83 +1,147 @@
-import { Status } from "@/lib/global-type/type";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUserData, IUserSliceState } from "./auth-slice-type";
+import { Status } from "@/lib/global-type/type";
 import { AppDispatch } from "../store";
 import API from "@/lib/http/API";
 
-const initialState:IUserSliceState={
-    user:null,
-    status:Status.IDLE
-}
+// Initial State
+const initialState: IUserSliceState = {
+  user: null,
+  loginStatus: Status.IDLE,
+  registerStatus: Status.IDLE,
+  forgotPasswordStatus: Status.IDLE,
+  resetPasswordStatus: Status.IDLE,
+};
 
-const authSlice=createSlice({
-    name:"auth",
-    initialState,
-    reducers:{
-        setUser(state:IUserSliceState,action:PayloadAction<IUserData | null>){
-            state.user=action.payload
-        },
-
-        setStatus(state:IUserSliceState,action:PayloadAction<Status>){
-            state.status=action.payload
-        }
-    }
-})
-
-export const{setUser,setStatus}=authSlice.actions
-export default authSlice.reducer
-
-export function userRegister(userRegisterData:IUserData){
-    return async function userRegisterThunk(dispatch:AppDispatch){
-        dispatch(setStatus(Status.LOADING))
-        try {
-            const response=await API.post("auth/register",userRegisterData)
-            if(response.status===200 || response.status===201){
-                dispatch(setStatus(Status.SUCCESS))
-            }else{
-                dispatch(setStatus(Status.ERROR))
-            }
-        } catch (error) {
-            console.log(error)
-            dispatch(setStatus(Status.ERROR))
-        }
-    }
+// Slice
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    setUser(state, action: PayloadAction<IUserData | null>) {
+      state.user = action.payload;
+    },
     
-}
+    setLoginStatus(state, action: PayloadAction<Status>) {
+      state.loginStatus = action.payload;
+    },
+    
+    setRegisterStatus(state, action: PayloadAction<Status>) {
+      state.registerStatus = action.payload;
+    },
+    
+    setForgotPasswordStatus(state, action: PayloadAction<Status>) {
+      state.forgotPasswordStatus = action.payload;
+    },
+    
+    setResetPasswordStatus(state, action: PayloadAction<Status>) {
+      state.resetPasswordStatus = action.payload;
+    },
+  },
+});
 
-export function userLogin(userLoginData: IUserData) {
-  return async function userLoginThunk(dispatch: AppDispatch) {
-    dispatch(setStatus(Status.LOADING));
+// Action Creators
+export const {
+  setUser,
+  setLoginStatus,
+  setRegisterStatus,
+  setForgotPasswordStatus,
+  setResetPasswordStatus,
+} = authSlice.actions;
+
+// Reducer Export
+export default authSlice.reducer;
+
+//Thunks (Async Actions)
+
+// Register
+export function userRegister(userRegisterData: IUserData) {
+  return async function (dispatch: AppDispatch) {
+    dispatch(setRegisterStatus(Status.LOADING));
     try {
-      const response = await API.post("auth/login", userLoginData);
+      const response = await API.post("auth/register", userRegisterData);
       if (response.status === 200 || response.status === 201) {
-        dispatch(setStatus(Status.SUCCESS));
-
-        const token = response.data.token;
-
-        // Save token in localStorage
-        localStorage.setItem("token", token);
-
-        // Dispatch user info without password
-        dispatch(setUser({
-          userEmail: userLoginData.userEmail,
-          token: token,
-          userName: "", // add here if backend provides a username
-        }));
+        dispatch(setRegisterStatus(Status.SUCCESS));
       } else {
-        dispatch(setStatus(Status.ERROR));
+        dispatch(setRegisterStatus(Status.ERROR));
       }
     } catch (error) {
       console.log(error);
-      dispatch(setStatus(Status.ERROR));
+      dispatch(setRegisterStatus(Status.ERROR));
     }
   };
 }
 
-export function userLogout() {
-  return function userLogoutThunk(dispatch: AppDispatch) {
-    localStorage.removeItem("token");  // Remove token from storage
-    dispatch(setUser(null));            // Clear user state in Redux
-    dispatch(setStatus(Status.IDLE));  // Reset status or set as needed
+//Login
+export function userLogin(userLoginData: IUserData) {
+  return async function (dispatch: AppDispatch) {
+    dispatch(setLoginStatus(Status.LOADING));
+    try {
+      const response = await API.post("auth/login", userLoginData);
+      if (response.status === 200 || response.status === 201) {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+
+        dispatch(setUser({
+          userEmail: userLoginData.userEmail,
+          token,
+        }));
+
+        dispatch(setLoginStatus(Status.SUCCESS));
+      } else {
+        dispatch(setLoginStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setLoginStatus(Status.ERROR));
+    }
   };
 }
 
+//Logout
+export function userLogout() {
+  return function (dispatch: AppDispatch) {
+    localStorage.removeItem("token");
+    dispatch(setUser(null));
+    dispatch(setLoginStatus(Status.IDLE));
+    dispatch(setRegisterStatus(Status.IDLE));
+    dispatch(setForgotPasswordStatus(Status.IDLE));
+    dispatch(setResetPasswordStatus(Status.IDLE));
+  };
+}
+
+//Forgot Password
+export function forgotPassword(forgotPasswordData: IUserData) {
+  return async function (dispatch: AppDispatch) {
+    dispatch(setForgotPasswordStatus(Status.LOADING));
+    try {
+      const response = await API.post("auth/forgot-password", forgotPasswordData);
+      if (response.status === 200) {
+        dispatch(setForgotPasswordStatus(Status.SUCCESS));
+      } else {
+        dispatch(setForgotPasswordStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setForgotPasswordStatus(Status.ERROR));
+    }
+  };
+}
+
+//Reset Password
+export function resetPassword(resetPasswordData: IUserData) {
+  return async function (dispatch: AppDispatch) {
+    dispatch(setResetPasswordStatus(Status.LOADING));
+    try {
+      const response = await API.post("auth/reset-password", resetPasswordData);
+      if (response.status === 200 || response.status === 201) {
+        dispatch(setResetPasswordStatus(Status.SUCCESS));
+      } else {
+        dispatch(setResetPasswordStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setResetPasswordStatus(Status.ERROR));
+    }
+  };
+}

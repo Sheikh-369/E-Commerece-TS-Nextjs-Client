@@ -2,19 +2,20 @@
 import React, { useState } from "react";
 import RegisterModal from "../auth/register-modal";
 import LoginModal from "../auth/login-modal";
-
+import ForgotPasswordModal from "../auth/forgot-password-modal";
 import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
 import { userLogout } from "@/lib/store/auth/auth-slice";
+import ResetPasswordModal from "../auth/reset-password";
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((store) => store.auth.user);
   const token = user?.token;
 
-  // Track which modal is open: "login", "register", or null
-  const [authModalType, setAuthModalType] = useState<"login" | "register" | null>(null);
+  const [authModalType, setAuthModalType] = useState<
+    "login" | "register" | "forgot-password" | "reset-password" | null
+  >(null);
 
-  // Logout handler
   const handleLogout = () => {
     dispatch(userLogout());
   };
@@ -23,12 +24,10 @@ const Navbar: React.FC = () => {
     <>
       <nav className="bg-white border-b border-gray-200 shadow-sm">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          {/* Logo */}
           <div className="text-2xl font-bold text-blue-600 cursor-pointer">
             E-Shop
           </div>
 
-          {/* Navigation Links */}
           <div className="hidden md:flex gap-6 text-gray-700">
             <a href="/" className="hover:text-blue-500">Home</a>
             <a href="/shop" className="hover:text-blue-500">Shop</a>
@@ -36,7 +35,6 @@ const Navbar: React.FC = () => {
             <a href="/about" className="hover:text-blue-500">About</a>
           </div>
 
-          {/* Auth Buttons */}
           <div className="flex items-center gap-4">
             {token ? (
               <button
@@ -65,12 +63,34 @@ const Navbar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Render the correct modal */}
       {authModalType === "register" && (
-        <RegisterModal onClose={() => setAuthModalType(null)} />
+        <RegisterModal
+          onClose={() => setAuthModalType(null)}
+          onSwitchToLogin={() => setAuthModalType("login")}
+        />
       )}
+
       {authModalType === "login" && (
-        <LoginModal onClose={() => setAuthModalType(null)} />
+        <LoginModal
+          onClose={() => setAuthModalType(null)}
+          onSwitchToRegister={() => setAuthModalType("register")}
+          onSwitchToForgotPassword={() => setAuthModalType("forgot-password")}
+        />
+      )}
+
+      {authModalType === "forgot-password" && (
+        <ForgotPasswordModal
+          onClose={() => setAuthModalType(null)}
+          onSwitchToLogin={() => setAuthModalType("login")}
+          onSwitchToResetPassword={() => setAuthModalType("reset-password")}  // <-- here!
+        />
+      )}
+
+      {authModalType === "reset-password" && (
+        <ResetPasswordModal
+          onClose={() => setAuthModalType(null)}
+          onSwitchToLogin={() => setAuthModalType("login")}
+        />
       )}
     </>
   );

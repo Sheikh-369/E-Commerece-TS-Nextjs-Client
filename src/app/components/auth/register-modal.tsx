@@ -7,11 +7,12 @@ import { userRegister } from "@/lib/store/auth/auth-slice";
 
 interface AuthModalProps {
   onClose: () => void;
+  onSwitchToLogin: () => void;
 }
 
-const RegisterModal: React.FC<AuthModalProps> = ({ onClose }) => {
+const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) => {
   const dispatch = useAppDispatch();
-  const { status } = useAppSelector((store) => store.auth); // fix here
+  const { registerStatus } = useAppSelector((store) => store.auth);
 
   const [userRegisterData, setUserRegisterData] = useState<IUserData>({
     userName: "",
@@ -23,10 +24,10 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose }) => {
 
   const handleRegisterData = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserRegisterData({
-      ...userRegisterData,
+    setUserRegisterData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleRegisterDataSubmission = async (e: FormEvent<HTMLFormElement>) => {
@@ -46,6 +47,7 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white w-full max-w-md p-6 rounded shadow-lg relative">
+        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl"
@@ -53,7 +55,7 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose }) => {
           &times;
         </button>
 
-        <h2 className="text-xl font-semibold mb-4 text-center">Register</h2>
+        <h2 className="text-xl font-semibold mb-4 text-center">Create an Account</h2>
 
         <form className="space-y-4" onSubmit={handleRegisterDataSubmission}>
           <input
@@ -85,19 +87,30 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose }) => {
 
           <button
             type="submit"
-            disabled={status === Status.LOADING}
+            disabled={registerStatus === Status.LOADING}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:bg-blue-400"
           >
-            {status === Status.LOADING ? "Registering..." : "Register"}
+            {registerStatus === Status.LOADING ? "Registering..." : "Register"}
           </button>
 
-          {status === Status.SUCCESS && (
+          {registerStatus === Status.SUCCESS && (
             <p className="text-green-600 text-sm text-center">Registration successful!</p>
           )}
-          {status === Status.ERROR && (
-            <p className="text-red-600 text-sm text-center">Something went wrong.</p>
+          {registerStatus === Status.ERROR && (
+            <p className="text-red-600 text-sm text-center">Something went wrong. Try again.</p>
           )}
         </form>
+
+        {/* Switch to Login */}
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <button
+            onClick={onSwitchToLogin}
+            className="text-blue-600 hover:underline font-medium cursor-pointer"
+          >
+            Login
+          </button>
+        </p>
       </div>
     </div>
   );
