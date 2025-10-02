@@ -4,6 +4,7 @@ export interface IUserData{
     id?:string,
     userName?:string,
     userEmail:string,
+    userPhoneNumber?:string,
     userPassword?:string,
     token?:string,
     OTP?:number | string,

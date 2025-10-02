@@ -1,5 +1,6 @@
-// components/RegisterModal.tsx
-import React, { ChangeEvent, FormEvent, useState } from "react";
+"use client";
+
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Status } from "@/lib/global-type/type";
 import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
 import { IUserData } from "@/lib/store/auth/auth-slice-type";
@@ -18,6 +19,7 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) =
     userName: "",
     userEmail: "",
     userPassword: "",
+    userPhoneNumber: "",
   });
 
   const [error, setError] = useState("");
@@ -33,16 +35,26 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) =
   const handleRegisterDataSubmission = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { userName, userEmail, userPassword } = userRegisterData;
+    const { userName, userEmail, userPassword, userPhoneNumber } = userRegisterData;
 
-    if (!userName || !userEmail || !userPassword) {
+    if (!userName || !userEmail || !userPassword || !userPhoneNumber) {
       setError("All fields are required");
       return;
     }
 
     setError("");
+
+    // Dispatch registration thunk (you don't wait for a result here)
     dispatch(userRegister(userRegisterData));
   };
+
+  // ✅ Listen for successful registration in Redux state
+  useEffect(() => {
+    if (registerStatus === Status.SUCCESS) {
+      onClose(); // Close register modal
+      onSwitchToLogin(); // Open login modal
+    }
+  }, [registerStatus, onClose, onSwitchToLogin]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
@@ -75,6 +87,14 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) =
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
           <input
+            type="text"
+            name="userPhoneNumber"
+            placeholder="Phone Number"
+            value={userRegisterData.userPhoneNumber}
+            onChange={handleRegisterData}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+          <input
             type="password"
             name="userPassword"
             placeholder="Password"
@@ -93,9 +113,6 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) =
             {registerStatus === Status.LOADING ? "Registering..." : "Register"}
           </button>
 
-          {registerStatus === Status.SUCCESS && (
-            <p className="text-green-600 text-sm text-center">Registration successful!</p>
-          )}
           {registerStatus === Status.ERROR && (
             <p className="text-red-600 text-sm text-center">Something went wrong. Try again.</p>
           )}
