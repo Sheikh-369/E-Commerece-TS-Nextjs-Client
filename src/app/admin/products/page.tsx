@@ -1,98 +1,174 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
-import { fetchAllUsers } from "@/lib/store/user/user-slice";
+import { fetchProducts } from "@/lib/store/products/product-slice";
 import React, { useEffect, useState } from "react";
+import AddProductModal from "./add-product-modal";
+import { fetchAllCategories } from "@/lib/store/category/category-slice";
+import { IProductData } from "@/lib/store/products/product-slice-type";
+import EditProductModal from "./edit-product-modal";
+// import EditProductModal from "./edit-product-modal";
 
-function Users() {
+function AdminProducts() {
   const dispatch = useAppDispatch();
-  const { users, status } = useAppSelector((store) => store.users);
+  const { product } = useAppSelector((store) => store.product);
+  const { categories } = useAppSelector((store) => store.categories);
+
+
+  //add product
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+
+  //edit logic
+  const [editProductModalOpen, setEditProductModalOpen] = useState(false);//edit part
+  const [selectedProduct, setSelectedProduct] = useState<IProductData | null>(null);//edit part
+
+    //edit part
+    const openEditProductModal = (teacher: IProductData) => {
+      setSelectedProduct(teacher);
+      setEditProductModalOpen(true);
+    };
+
+    //edit part
+  const closeEditProductModal = () => {
+    setEditProductModalOpen(false);
+    setSelectedProduct(null);
+  };
+
+  //filtering products according to category
+  const [selectedCategory, setSelectedCategory] = useState("");
+  
+  // Search logic  
+  const [searchedText, setSearchedText] = useState<string>("")
+
+const finalFilteredData = product.filter((p) => {
+  // Category filter
+  const matchesCategory = selectedCategory
+    ? p.category?.categoryName === selectedCategory
+    : true;
+
+  // Search filter
+  const searchLower = searchedText.toLowerCase();
+  const matchesSearch =
+    p.productName.toLowerCase().includes(searchLower) ||
+    p.productPrice.toString().toLowerCase().includes(searchLower) ||
+    (p.productDescription?.toLowerCase() || "").includes(searchLower);
+
+  // Return only if BOTH match
+  return matchesCategory && matchesSearch;
+});
+
 
   useEffect(() => {
-    dispatch(fetchAllUsers());
+    dispatch(fetchProducts());
+    dispatch(fetchAllCategories());
   }, [dispatch]);
-
-  // Search logic
-  const [searchedText, setSearchedText] = useState<string>("");
-
-  const filteredData = users.filter((u) => {
-    const searchLower = searchedText.toLowerCase();
-    return (
-      (u.userName ?? "").toLowerCase().includes(searchLower) ||
-      (u.userEmail ?? "").toLowerCase().includes(searchLower) ||
-      (u.userPhoneNumber ?? "").toLowerCase().includes(searchLower) ||
-      (u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "")
-        .toLowerCase()
-        .includes(searchLower)
-    );
-  });
-
-  // Pagination logic
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 10; // rows per page
-  const totalPages = Math.ceil(filteredData.length / pageSize);
-
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
-  const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const handleNextPage = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   return (
     <>
+      {/* Filtering Categories */}
+      <div className="mb-4 w-64">
+        <label
+          htmlFor="category"
+          className="block mb-2 text-sm font-medium text-gray-700"
+        >
+          Select Category
+        </label>
+        <select
+          id="category"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="
+      block w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm 
+      focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400
+      hover:border-gray-400 transition-all duration-200
+    "
+        >
+          <option value="">All Categories</option>
+          {categories.map((cat) => (
+            <option key={cat.categoryName} value={cat.categoryName}>
+              {cat.categoryName}
+            </option>
+          ))}
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </div>
+             {/*Edit Modal */}
+      {editProductModalOpen && selectedProduct && (
+    <EditProductModal product={selectedProduct} closeModal={closeEditProductModal} />
+    )}
+      {/* Table */}
       <div className="flex flex-col">
+        {/* Add Product Modal */}
+        {isProductModalOpen && (
+          <AddProductModal onClose={() => setIsProductModalOpen(false)} />
+        )}
+
         <div className=" overflow-x-auto">
           <div className="min-w-full inline-block align-middle">
-            <div className="relative  text-gray-500 focus-within:text-gray-900 mb-4">
-              <div className="absolute inset-y-0 left-1 flex items-center pl-3 pointer-events-none ">
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M17.5 17.5L15.4167 15.4167M15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333C11.0005 15.8333 12.6614 15.0929 13.8667 13.8947C15.0814 12.6872 15.8333 11.0147 15.8333 9.16667Z"
-                    stroke="#9CA3AF"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M17.5 17.5L15.4167 15.4167M15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333C11.0005 15.8333 12.6614 15.0929 13.8667 13.8947C15.0814 12.6872 15.8333 11.0147 15.8333 9.16667Z"
-                    stroke="black"
-                    strokeOpacity="0.2"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M17.5 17.5L15.4167 15.4167M15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333C11.0005 15.8333 12.6614 15.0929 13.8667 13.8947C15.0814 12.6872 15.8333 11.0147 15.8333 9.16667Z"
-                    stroke="black"
-                    strokeOpacity="0.2"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                </svg>
+            <div className="flex items-center justify-between mb-4">
+              {/* Search Input */}
+              <div className="relative text-sky-500 focus-within:text-gray-900">
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                  <svg
+                    className="w-5 h-5"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M17.5 17.5L15.4167 15.4167M15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333C11.0005 15.8333 12.6614 15.0929 13.8667 13.8947C15.0814 12.6872 15.8333 11.0147 15.8333 9.16667Z"
+                      stroke="#9CA3AF"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  id="default-search"
+                  className="block w-80 h-11 pl-12 pr-4 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-sky-300 rounded-full placeholder-gray-400 focus:outline-none"
+                  placeholder="Search for company"
+                    value={searchedText}
+                    onChange={(e) => setSearchedText(e.target.value)}
+                />
               </div>
-              <input
-                type="text"
-                value={searchedText ?? ""}
-                onChange={(e) => {
-                  setSearchedText(e.target.value);
-                }}
-                id="default-search"
-                className="block w-80 h-11 pr-5 pl-12 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none"
-                placeholder="Search for company"
-              />
+
+              {/* +Product Button */}
+              <button
+                onClick={() => setIsProductModalOpen(true)}
+                className="px-4 py-2 bg-sky-600 text-white rounded-lg shadow hover:bg-sky-700 transition"
+              >
+                + Product
+              </button>
             </div>
+
             <div className="overflow-hidden ">
               <table className=" min-w-full rounded-xl">
                 <thead>
-                  <tr className="bg-blue-500">
+                  <tr className="bg-sky-500">
                     <th
                       scope="col"
                       className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize rounded-t-xl"
+                    >
+                      {" "}
+                      {/* For image */}{" "}
+                    </th>
+                    <th
+                      scope="col"
+                      className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
                     >
                       {" "}
                       Name{" "}
@@ -102,21 +178,42 @@ function Users() {
                       className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
                     >
                       {" "}
-                      Phone Number{" "}
+                      Category{" "}
                     </th>
                     <th
                       scope="col"
                       className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
                     >
                       {" "}
-                      Email{" "}
+                      Price{" "}
                     </th>
                     <th
                       scope="col"
                       className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
                     >
                       {" "}
-                      Member Since{" "}
+                      Old Price{" "}
+                    </th>
+                    <th
+                      scope="col"
+                      className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
+                    >
+                      {" "}
+                      Stock{" "}
+                    </th>
+                    <th
+                      scope="col"
+                      className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
+                    >
+                      {" "}
+                      Discount{" "}
+                    </th>
+                    <th
+                      scope="col"
+                      className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
+                    >
+                      {" "}
+                      Description{" "}
                     </th>
                     <th
                       scope="col"
@@ -127,32 +224,64 @@ function Users() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-300 ">
-                  {paginatedData.map((u) => (
+                <tbody className="divide-y divide-sky-300 ">
+                  {finalFilteredData.map((p) => (
                     <tr
-                      key={u.id}
-                      className="bg-sky-100 transition-all duration-500 hover:bg-sky-500"
+                      key={p.id}
+                      className="bg-sky-100 transition-all duration-500 hover:bg-sky-400"
                     >
-                      <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
-                        {u.userName}
+                      <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
+                        {p.productImage ? (
+                          <img
+                            src={p.productImage}
+                            alt={p.productName}
+                            className="w-16 h-16 object-cover rounded-md"
+                          />
+                        ) : (
+                          <span>No Image</span>
+                        )}
                       </td>
-                      <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                      <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                         {" "}
-                        {u.userPhoneNumber}{" "}
+                        {p.productName}{" "}
                       </td>
-                      <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                      <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                         {" "}
-                        {u.userEmail}
+                        {p.category?.categoryName}
                       </td>
-                      <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                      <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                         {" "}
-                        {u.createdAt
-                          ? new Date(u.createdAt).toLocaleDateString()
-                          : "-"}
+                        Rs. {p.productPrice}
                       </td>
-                      <td className=" px-2 py-1 ">
+                      <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                        {" "}
+                        Rs. {p.oldPrice}
+                      </td>
+                      <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                        {" "}
+                        {p.productTotalStock}
+                      </td>
+                      <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                        {" "}
+                        {p.productDiscount}%
+                      </td>
+                      <td className="px-3 py-2 text-sm font-medium text-gray-900 max-w-xs relative group">
+  <span className="inline-block truncate max-w-[120px] cursor-pointer">
+    {(p.productDescription ? p.productDescription.split(" ").slice(0, 3).join(" ") : "")}...
+  </span>
+  {p.productDescription && (
+    <div className="absolute left-0 bottom-full mb-1 w-64 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+      {p.productDescription}
+    </div>
+  )}
+</td>
+
+
+
+                      <td className=" p-5 ">
                         <div className="flex items-center gap-1">
-                          <button className="p-2  rounded-full  group transition-all duration-500  flex item-center">
+                          {/* Edit Button */}
+                          <button onClick={() => openEditProductModal(p)} className="p-2  rounded-full  group transition-all duration-500  flex item-center">
                             <svg
                               className="cursor-pointer"
                               width={20}
@@ -168,6 +297,7 @@ function Users() {
                               />
                             </svg>
                           </button>
+                          {/* Delete Button */}
                           <button className="p-2 rounded-full  group transition-all duration-500  flex item-center">
                             <svg
                               width={20}
@@ -183,7 +313,7 @@ function Users() {
                               />
                             </svg>
                           </button>
-                          <button className="p-2 rounded-full  group transition-all duration-500  flex item-center">
+                          {/* <button className="p-2 rounded-full  group transition-all duration-500  flex item-center">
                             <svg
                               width={20}
                               height={20}
@@ -199,33 +329,13 @@ function Users() {
                                 strokeLinecap="round"
                               />
                             </svg>
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-            {/* Pagination controls */}
-            <div className="flex justify-between items-center mt-4">
-              <button
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span>
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-              >
-                Next
-              </button>
             </div>
           </div>
         </div>
@@ -234,5 +344,4 @@ function Users() {
   );
 }
 
-export default Users;
-
+export default AdminProducts;

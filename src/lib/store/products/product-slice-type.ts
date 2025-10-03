@@ -8,7 +8,8 @@ export interface IProductData {
   oldPrice?: string; 
   productTotalStock: number;
   productDiscount: number;
-  productImage?: string;
+  productImage?:File | string | null;
+  categoryId?:string,
   category?:{
     categoryName:string
   }

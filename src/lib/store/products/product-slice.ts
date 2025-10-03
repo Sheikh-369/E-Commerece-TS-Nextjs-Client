@@ -31,6 +31,7 @@ const productSlice=createSlice({
 export const {setStatus,setProduct,setSelectedProduct}=productSlice.actions
 export default productSlice.reducer
 
+//fetch products
 export function fetchProducts(){
     return async function fetchProductsThunk(dispatch:AppDispatch){
         dispatch(setStatus(Status.LOADING))
@@ -49,6 +50,7 @@ export function fetchProducts(){
     }
 }
 
+//fetch single product by id
 export function fetchProductById(id: string) {
   return async function fetchProductByIdThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
@@ -62,6 +64,53 @@ export function fetchProductById(id: string) {
       }
     } catch (error) {
       console.log(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+//add product
+export function addProduct(productData:IProductData){
+  return async function addProductThunk(dispatch:AppDispatch){
+    dispatch(setStatus(Status.LOADING))
+    try {
+      const response=await API.post("product",productData,{
+                headers:{
+                    "Content-Type":"multipart/form-data"
+                }
+            })
+      if(response.status===200 || response.status===201){
+        dispatch(setStatus(Status.SUCCESS))
+        dispatch(fetchProducts())
+      }else{
+        dispatch(setStatus(Status.ERROR))
+      }
+    } catch (error) {
+      console.log(error)
+      dispatch(setStatus(Status.ERROR))
+    }
+  }
+}
+
+//edit product
+export function updateProduct(productData: IProductData, id: string) {
+  return async function updateProductThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await API.patch(`product/${id}`, productData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(fetchProducts());
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.error(error);
       dispatch(setStatus(Status.ERROR));
     }
   };

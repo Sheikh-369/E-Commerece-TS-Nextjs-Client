@@ -1,26 +1,30 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
-import { fetchAllUsers } from "@/lib/store/user/user-slice";
+import { deleteCategory, fetchAllCategories } from "@/lib/store/category/category-slice";
 import React, { useEffect, useState } from "react";
+import AddCategoryModal from "./add-category";
+import EditCategoryModal from "./edit-category";
+import { ICategoryData } from "@/lib/store/category/category-slice-type";
+import DeleteCategoryModal from "./delete-category-modal";
 
-function Users() {
+function CAtegories() {
   const dispatch = useAppDispatch();
-  const { users, status } = useAppSelector((store) => store.users);
+  const { categories } = useAppSelector((store) => store.categories);
 
   useEffect(() => {
-    dispatch(fetchAllUsers());
+    dispatch(fetchAllCategories());
   }, [dispatch]);
 
   // Search logic
   const [searchedText, setSearchedText] = useState<string>("");
 
-  const filteredData = users.filter((u) => {
+  const filteredData = categories.filter((c) => {
     const searchLower = searchedText.toLowerCase();
     return (
-      (u.userName ?? "").toLowerCase().includes(searchLower) ||
-      (u.userEmail ?? "").toLowerCase().includes(searchLower) ||
-      (u.userPhoneNumber ?? "").toLowerCase().includes(searchLower) ||
-      (u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "")
+      c.categoryName.toLowerCase().includes(searchLower) ||
+      (c.id?.toString() ?? "").toLowerCase().includes(searchLower) ||
+      c.categoryDescription.toLowerCase().includes(searchLower) ||
+      (c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "")
         .toLowerCase()
         .includes(searchLower)
     );
@@ -35,18 +39,47 @@ function Users() {
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
+  //add category
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  //edit category
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<ICategoryData | null>(null);
+
+    //delete logic
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [categoryToDelete, setCategoryToDelete] = useState<ICategoryData | null>(null);
   return (
     <>
       <div className="flex flex-col">
+        {/* Add Category Modal*/}
+        <AddCategoryModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+      {/* Edit Category Modal */}
+      <EditCategoryModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        category={selectedCategory}
+      />
+      {/* Delete Category Modal */}
+      <DeleteCategoryModal
+        categoryToDelete={categoryToDelete}
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        />
+
+
         <div className=" overflow-x-auto">
           <div className="min-w-full inline-block align-middle">
-            <div className="relative  text-gray-500 focus-within:text-gray-900 mb-4">
-              <div className="absolute inset-y-0 left-1 flex items-center pl-3 pointer-events-none ">
+            <div className="relative text-gray-500 focus-within:text-gray-900 mb-4">
+              {/* Search Icon */}
+              <div className="absolute inset-y-0 left-1 flex items-center pl-3 pointer-events-none">
                 <svg
                   className="w-5 h-5"
                   viewBox="0 0 20 20"
@@ -59,33 +92,25 @@ function Users() {
                     strokeWidth="1.6"
                     strokeLinecap="round"
                   />
-                  <path
-                    d="M17.5 17.5L15.4167 15.4167M15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333C11.0005 15.8333 12.6614 15.0929 13.8667 13.8947C15.0814 12.6872 15.8333 11.0147 15.8333 9.16667Z"
-                    stroke="black"
-                    strokeOpacity="0.2"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M17.5 17.5L15.4167 15.4167M15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333C11.0005 15.8333 12.6614 15.0929 13.8667 13.8947C15.0814 12.6872 15.8333 11.0147 15.8333 9.16667Z"
-                    stroke="black"
-                    strokeOpacity="0.2"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
                 </svg>
               </div>
-              <input
-                type="text"
-                value={searchedText ?? ""}
-                onChange={(e) => {
-                  setSearchedText(e.target.value);
-                }}
-                id="default-search"
-                className="block w-80 h-11 pr-5 pl-12 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none"
-                placeholder="Search for company"
-              />
+
+              {/* Search + Button */}
+              <div className="flex justify-between items-center gap-4">
+                <input
+                  type="text"
+                  value={searchedText ?? ""}
+                  onChange={(e) => setSearchedText(e.target.value)}
+                  id="default-search"
+                  className="block w-80 h-11 pr-5 pl-12 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none"
+                  placeholder="Search for company"
+                />
+                <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+                  + Category
+                </button>
+              </div>
             </div>
+
             <div className="overflow-hidden ">
               <table className=" min-w-full rounded-xl">
                 <thead>
@@ -95,28 +120,21 @@ function Users() {
                       className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize rounded-t-xl"
                     >
                       {" "}
-                      Name{" "}
+                      Category{" "}
                     </th>
                     <th
                       scope="col"
                       className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
                     >
                       {" "}
-                      Phone Number{" "}
+                      Description{" "}
                     </th>
                     <th
                       scope="col"
                       className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
                     >
                       {" "}
-                      Email{" "}
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-                    >
-                      {" "}
-                      Member Since{" "}
+                      Created At{" "}
                     </th>
                     <th
                       scope="col"
@@ -128,31 +146,30 @@ function Users() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-300 ">
-                  {paginatedData.map((u) => (
+                  {paginatedData.map((c) => (
                     <tr
-                      key={u.id}
+                      key={c.id}
                       className="bg-sky-100 transition-all duration-500 hover:bg-sky-500"
                     >
                       <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
-                        {u.userName}
+                        {c.categoryName}
                       </td>
                       <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                         {" "}
-                        {u.userPhoneNumber}{" "}
+                        {c.categoryDescription}{" "}
                       </td>
                       <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                         {" "}
-                        {u.userEmail}
-                      </td>
-                      <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                        {" "}
-                        {u.createdAt
-                          ? new Date(u.createdAt).toLocaleDateString()
+                        {c.createdAt
+                          ? new Date(c.createdAt).toLocaleDateString()
                           : "-"}
                       </td>
                       <td className=" px-2 py-1 ">
                         <div className="flex items-center gap-1">
-                          <button className="p-2  rounded-full  group transition-all duration-500  flex item-center">
+                          <button onClick={() => {
+                setSelectedCategory(c);
+                setIsEditOpen(true);}}
+               className="p-2  rounded-full  group transition-all duration-500  flex item-center">
                             <svg
                               className="cursor-pointer"
                               width={20}
@@ -168,7 +185,8 @@ function Users() {
                               />
                             </svg>
                           </button>
-                          <button className="p-2 rounded-full  group transition-all duration-500  flex item-center">
+                          {/* Delete Button */}
+                          <button onClick={() => { setCategoryToDelete(c); setDeleteModalOpen(true); }} className="p-2 rounded-full  group transition-all duration-500  flex item-center">
                             <svg
                               width={20}
                               height={20}
@@ -234,5 +252,4 @@ function Users() {
   );
 }
 
-export default Users;
-
+export default CAtegories;

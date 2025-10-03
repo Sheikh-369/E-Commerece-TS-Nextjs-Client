@@ -4,10 +4,10 @@ import React from 'react';
 
 function Sidebar() {
   const sidebarItems = [
-    { name: "Users", icon: "users", path: "/admin/dashboard/users" },
-    { name: "Products", icon: "shopping-bag", path: "/admin/dashboard/menu" },
-    { name: "Category", icon: "tags", path: "/admin/dashboard/category" },
-    { name: "Order", icon: "shopping-cart", path: "/admin/dashboard/order" },
+    { name: "Users", icon: "users", path: "/admin/users" },
+    { name: "Products", icon: "shopping-bag", path: "/admin/products" },
+    { name: "Category", icon: "tags", path: "/admin/categories" },
+    { name: "Order", icon: "shopping-cart", path: "/admin/order" },
   ];
 
   return (
