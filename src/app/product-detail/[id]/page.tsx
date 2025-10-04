@@ -5,10 +5,13 @@ import { useParams } from 'next/navigation'
 import { useAppDispatch, useAppSelector } from '@/lib/store/auth/hooks'
 import { Status } from '@/lib/global-type/type'
 import { fetchProductById } from '@/lib/store/products/product-slice'
+import { addToCart } from '@/lib/store/cart/cart-slice'
 
 function ProductDetail() {
   const { id } = useParams()
   const dispatch = useAppDispatch()
+  //quantity contrl logic
+  const [quantity, setQuantity] = React.useState(1);
 
   const productSlice = useAppSelector((state) => state.product)
   const { selectedProduct: product, status } = productSlice
@@ -16,6 +19,12 @@ function ProductDetail() {
   // Debug log
   console.log('ProductDetail: id', id)
   console.log('Product slice state', productSlice)
+
+  //add to cart logic
+  const handleAddToCart = () => {
+  if (!product) return;
+  dispatch(addToCart(product.id)
+  )};
 
   useEffect(() => {
     if (id) {
@@ -91,15 +100,17 @@ function ProductDetail() {
 
           <div className="h-[88px] mt-6 py-[18px] bg-white border border-white justify-center items-center gap-3 flex">
             <div className="p-2 bg-white rounded-[170px] border border-neutral-200 justify-center items-center flex">
-              <button className="w-[34px] h-[34px]">-</button>
+              <button onClick={() => setQuantity((prev) => Math.max(1, prev - 1))} className="w-[34px] h-[34px]">-</button>
               <input
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
                 className="w-10 text-center text-[#191919] text-base font-normal leading-normal"
                 defaultValue={1}
               />
-              <button className="w-[34px] h-[34px]">+</button>
+              <button onClick={() => setQuantity((prev) => prev + 1)} className="w-[34px] h-[34px]">+</button>
             </div>
 
-            <button className="h-[51px] px-20 py-4 bg-[#00b206] rounded-[43px] justify-center items-center gap-4 flex">
+            <button onClick={handleAddToCart} className="h-[51px] px-20 py-4 bg-[#00b206] rounded-[43px] justify-center items-center gap-4 flex">
               <span className="text-white text-base font-semibold leading-tight">Add to Cart</span>
             </button>
           </div>

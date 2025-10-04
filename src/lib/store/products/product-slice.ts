@@ -115,3 +115,21 @@ export function updateProduct(productData: IProductData, id: string) {
     }
   };
 }
+
+export function deleteProduct(id: string) {
+  return async function deleteProductThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await API.delete(`product/${id}`);
+      if (response.status === 200 || response.status === 201) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(fetchProducts());
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}

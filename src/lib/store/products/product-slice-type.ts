@@ -12,7 +12,8 @@ export interface IProductData {
   categoryId?:string,
   category?:{
     categoryName:string
-  }
+  },
+  deletedAt?:string | null,
 }
 
 export interface IProductSliceState{

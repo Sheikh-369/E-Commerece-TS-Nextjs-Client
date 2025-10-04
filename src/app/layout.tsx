@@ -1,6 +1,4 @@
 'use client';
-
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "react-redux";
@@ -26,7 +24,7 @@ export default function RootLayout({
   const pathname = usePathname();
 
   // List all routes where navbar should be hidden
-  const hideNavbarRoutes = ["/admin", "/admin/products", "/admin/settings"];
+  const hideNavbarRoutes = ["/admin", "/admin/products", "/admin/settings","/user"];
 
   const shouldHideNavbar = hideNavbarRoutes.some((route) =>
     pathname.startsWith(route)

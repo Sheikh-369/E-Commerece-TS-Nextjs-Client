@@ -6,6 +6,7 @@ import AddProductModal from "./add-product-modal";
 import { fetchAllCategories } from "@/lib/store/category/category-slice";
 import { IProductData } from "@/lib/store/products/product-slice-type";
 import EditProductModal from "./edit-product-modal";
+import DeleteProductModal from "./delete-product-modal";
 // import EditProductModal from "./edit-product-modal";
 
 function AdminProducts() {
@@ -62,8 +63,18 @@ const finalFilteredData = product.filter((p) => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
+    //delete logic
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [productToDelete, setProductToDelete] = useState<IProductData | null>(null);
+
   return (
     <>
+    {/* Delete Category Modal */}
+          <DeleteProductModal
+            productToDelete={productToDelete}
+            isOpen={deleteModalOpen}
+            onClose={() => setDeleteModalOpen(false)}
+            />
       {/* Filtering Categories */}
       <div className="mb-4 w-64">
         <label
@@ -298,7 +309,7 @@ const finalFilteredData = product.filter((p) => {
                             </svg>
                           </button>
                           {/* Delete Button */}
-                          <button className="p-2 rounded-full  group transition-all duration-500  flex item-center">
+                          <button onClick={() => { setProductToDelete(p); setDeleteModalOpen(true); }} className="p-2 rounded-full  group transition-all duration-500  flex item-center">
                             <svg
                               width={20}
                               height={20}
