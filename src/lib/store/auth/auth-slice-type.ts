@@ -13,6 +13,7 @@ export interface IUserData{
 
 export interface IUserSliceState{
     user:IUserData |null,
+     isLoaded: boolean; // NEW
     loginStatus: Status;
     registerStatus: Status;
     forgotPasswordStatus: Status;

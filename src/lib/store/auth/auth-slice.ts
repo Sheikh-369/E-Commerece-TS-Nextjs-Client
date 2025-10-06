@@ -7,6 +7,7 @@ import API from "@/lib/http/API";
 // Initial State
 const initialState: IUserSliceState = {
   user: null,
+  isLoaded: false, // NEW
   loginStatus: Status.IDLE,
   registerStatus: Status.IDLE,
   forgotPasswordStatus: Status.IDLE,
@@ -18,8 +19,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<IUserData | null>) {
+    setUser(state:IUserSliceState, action: PayloadAction<IUserData | null>) {
       state.user = action.payload;
+      state.isLoaded = true; // Mark that auth is ready
     },
     
     setLoginStatus(state, action: PayloadAction<Status>) {
@@ -37,7 +39,8 @@ const authSlice = createSlice({
     setResetPasswordStatus(state, action: PayloadAction<Status>) {
       state.resetPasswordStatus = action.payload;
     },
-  },
+    
+  }
 });
 
 // Action Creators
@@ -53,6 +56,18 @@ export const {
 export default authSlice.reducer;
 
 //Thunks (Async Actions)
+
+export function loadUserFromStorage() {
+  return function (dispatch: AppDispatch) {
+    const token = localStorage.getItem("token");
+    if (token) {
+      dispatch(setUser({ userEmail: "", token })); // optionally fetch full user info from server
+    } else {
+      dispatch(setUser(null));
+    }
+  };
+}
+
 
 // Register
 export function userRegister(userRegisterData: IUserData) {

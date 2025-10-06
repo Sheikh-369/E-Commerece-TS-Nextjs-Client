@@ -5,6 +5,7 @@ export interface ICartItem{
     id?:string,
     product:IProductData,
     quantity:number,
+    productId?:string,
     deletedAt?:string,
 }
 
