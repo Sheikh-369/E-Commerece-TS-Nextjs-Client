@@ -49,6 +49,7 @@ const EditProductModal: React.FC<Props> = ({ product, closeModal }) => {
     }
   };
 
+
   const handleEditProductDataSubmissison = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(updateProduct(productData, productData.id));

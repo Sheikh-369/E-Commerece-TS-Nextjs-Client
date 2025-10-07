@@ -1,0 +1,21 @@
+'use client';
+
+import React from 'react';
+import Carousel from '../components/categories/carousal/carousal';
+import Title from '../components/categories/heading/heading';
+import Drinks from '../components/categories/drinks/drinks';
+import Electronics from '../components/categories/electronics/electronics';
+
+function Categories() {
+  return (
+    <main className="w-full min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-200 flex flex-col items-center justify-start px-4 py-8">
+        <Title/>
+        <Carousel />
+        <Drinks/>
+        <Electronics/>
+      
+    </main>
+  );
+}
+
+export default Categories;

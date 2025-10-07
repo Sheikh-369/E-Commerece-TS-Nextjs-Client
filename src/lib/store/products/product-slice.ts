@@ -3,10 +3,13 @@ import { IProductData, IProductSliceState } from "./product-slice-type";
 import { Status } from "@/lib/global-type/type";
 import { AppDispatch } from "../store";
 import API from "@/lib/http/API";
+import APIWITHTOKEN from "@/lib/http/API-with-token";
 
 const initialState:IProductSliceState={
     product:[],
     selectedProduct: null,
+    drinks:[],
+    electronics:[],
     status:Status.IDLE
 }
 
@@ -24,11 +27,14 @@ const productSlice=createSlice({
 
         setStatus(state:IProductSliceState,action:PayloadAction<Status>){
             state.status=action.payload
-        }
+        },
+
+        setDrinks(state, action) { state.drinks = action.payload },
+        setElectronics(state, action) { state.electronics = action.payload },
     }
 })
 
-export const {setStatus,setProduct,setSelectedProduct}=productSlice.actions
+export const {setStatus,setProduct,setSelectedProduct,setDrinks,setElectronics}=productSlice.actions
 export default productSlice.reducer
 
 //fetch products
@@ -49,6 +55,47 @@ export function fetchProducts(){
         }
     }
 }
+
+// Thunk for fetching drinks
+export function fetchDrinks() {
+  return async function fetchDrinksThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING)); // Start loading state
+
+    try {
+      const response = await API.get('product/category/drinks'); // Fetch drinks
+      if (response.status === 200) {
+        dispatch(setDrinks(response.data.data)) // Update products
+        dispatch(setStatus(Status.SUCCESS)); // Success state
+      } else {
+        dispatch(setStatus(Status.ERROR)); // Error state if failure
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(setStatus(Status.ERROR)); // Handle error
+    }
+  };
+}
+
+// Thunk for fetching electronics
+export function fetchElectronics() {
+  return async function fetchElectronicsThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING)); // Start loading state
+
+    try {
+      const response = await API.get('product/category/electronics'); // Fetch electronics
+      if (response.status === 200) {
+        dispatch(setElectronics(response.data.data)) // Update products
+        dispatch(setStatus(Status.SUCCESS)); // Success state
+      } else {
+        dispatch(setStatus(Status.ERROR)); // Error state if failure
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(setStatus(Status.ERROR)); // Handle error
+    }
+  };
+}
+
 
 //fetch single product by id
 export function fetchProductById(id: string) {
@@ -74,7 +121,7 @@ export function addProduct(productData:IProductData){
   return async function addProductThunk(dispatch:AppDispatch){
     dispatch(setStatus(Status.LOADING))
     try {
-      const response=await API.post("product",productData,{
+      const response=await APIWITHTOKEN.post("product",productData,{
                 headers:{
                     "Content-Type":"multipart/form-data"
                 }
@@ -97,7 +144,7 @@ export function updateProduct(productData: IProductData, id: string) {
   return async function updateProductThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await API.patch(`product/${id}`, productData, {
+      const response = await APIWITHTOKEN.patch(`product/${id}`, productData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -120,7 +167,7 @@ export function deleteProduct(id: string) {
   return async function deleteProductThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      const response = await API.delete(`product/${id}`);
+      const response = await APIWITHTOKEN.delete(`product/${id}`);
       if (response.status === 200 || response.status === 201) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(fetchProducts());

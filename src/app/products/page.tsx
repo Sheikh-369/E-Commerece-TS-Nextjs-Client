@@ -170,9 +170,9 @@ export default function Products() {
                   </p>
 
                   <div className="flex items-center mt-2">
-  <p className="text-xs font-semibold text-black">${product.productPrice}</p>
+  <p className="text-xs font-semibold text-black">Rs. {product.productPrice}</p>
   {product.oldPrice && (
-    <del className="ml-1 text-[10px] text-gray-600">${product.oldPrice}</del>
+    <del className="ml-1 text-[10px] text-gray-600">Rs. {product.oldPrice}</del>
   )}
 
   {/* Cart Button */}

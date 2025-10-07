@@ -14,7 +14,6 @@ function AdminProducts() {
   const { product } = useAppSelector((store) => store.product);
   const { categories } = useAppSelector((store) => store.categories);
 
-
   //add product
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
 
@@ -75,6 +74,7 @@ const finalFilteredData = product.filter((p) => {
             isOpen={deleteModalOpen}
             onClose={() => setDeleteModalOpen(false)}
             />
+
       {/* Filtering Categories */}
       <div className="mb-4 w-64">
         <label
@@ -241,6 +241,7 @@ const finalFilteredData = product.filter((p) => {
                       key={p.id}
                       className="bg-sky-100 transition-all duration-500 hover:bg-sky-400"
                     >
+
                       <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
                         {p.productImage ? (
                           <img
