@@ -11,10 +11,21 @@ import React, { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import DeleteCartItemModal from "./delete-cart-modal";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function Cart() {
   const dispatch = useAppDispatch();
   const { items } = useAppSelector((store) => store.cart);
+
+  //redirecting towards check out page with the selected items
+  const router=useRouter()
+  const handleCheckout = () => {
+    // use selectedItems if available, else all items
+    const checkoutItems = selectedItems.length > 0 ? selectedItems : items.map(item => item.id);
+    const queryParam = checkoutItems.join(",");
+
+    router.push(`/check-out?items=${queryParam}`);
+  };
 
   // delete logic
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -181,12 +192,13 @@ function Cart() {
                 <span>Total</span>
                 <span>Rs. {total.toFixed(2)}</span>
               </div>
-              <Link href={'/check-out'}>
-                <button className="bg-[#001f3f] text-white py-2 px-4 rounded-lg mt-3 w-full hover:bg-[#003366] transition">
+              {/* Check out button */}
+              <button
+                onClick={handleCheckout}
+                className="bg-[#001f3f] text-white py-2 px-4 rounded-lg mt-3 w-full hover:bg-[#003366] transition"
+              >
                 Checkout
-              </button>
-              </Link>
-              
+              </button>  
             </div>
           </div>
         </div>

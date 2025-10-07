@@ -3,6 +3,7 @@ import { ICartItem, ICartSliceState } from "./cart-slice-type";
 import { Status } from "@/lib/global-type/type";
 import { AppDispatch } from "../store";
 import API from "@/lib/http/API";
+import APIWITHTOKEN from "@/lib/http/API-with-token";
 
 const initialState:ICartSliceState={
     items:[],
@@ -38,7 +39,7 @@ export function addToCart(productId:string,quantity:number){
     return async function addToCartThunk(dispatch:AppDispatch){
         dispatch(setStatus(Status.LOADING))
         try {
-            const response=await API.post("cart",{
+            const response=await APIWITHTOKEN.post("cart",{
                 productId: productId,
                 quantity,
             })
@@ -60,7 +61,7 @@ export function fetchCartItems(){
     return async function fetchCartItemsThunk(dispatch:AppDispatch){
         dispatch(setStatus(Status.LOADING))
         try {
-            const response=await API.get("cart")
+            const response=await APIWITHTOKEN.get("cart")
             if(response.status===200 || response.status===201){
                 dispatch(setItems(response.data.data))
                 dispatch(setStatus(Status.SUCCESS))
@@ -79,7 +80,7 @@ export function deleteCartItems(cartItemId?:string){
     return async function deleteCartItemsThunk(dispatch:AppDispatch){
         dispatch(setStatus(Status.LOADING))
         try {
-            const response=await API.delete("cart/"+cartItemId)
+            const response=await APIWITHTOKEN.delete("cart/"+cartItemId)
             if(response.status===200 || response.status===201){
                 // dispatch(setItems(response.data.data))
                 dispatch(setStatus(Status.SUCCESS))
@@ -99,7 +100,7 @@ export function deleteMultipleCartItems(ids: string[]) {
   return async function (dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
     try {
-      await Promise.all(ids.map(id => API.delete("cart/" + id)));
+      await Promise.all(ids.map(id => APIWITHTOKEN.delete("cart/" + id)));
       dispatch(fetchCartItems());
       dispatch(setStatus(Status.SUCCESS));
     } catch (error) {
@@ -114,7 +115,7 @@ export function updateCartItemQuantity(cartItemId: string, quantity: number) {
     return async function updateCartItemThunk(dispatch: AppDispatch) {
         dispatch(setStatus(Status.LOADING));
         try {
-            const response = await API.patch(`cart/${cartItemId}`, { quantity });
+            const response = await APIWITHTOKEN.patch(`cart/${cartItemId}`, { quantity });
             if (response.status === 200) {
                 // update only that item in Redux
                 dispatch(updateItemQuantity({ cartItemId, quantity }));

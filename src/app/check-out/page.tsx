@@ -6,19 +6,28 @@ import { createAnOrder } from "@/lib/store/check-out/check-out-slice";
 import { IOrderData, IOrderProduct, PaymentMethod } from "@/lib/store/check-out/check-out-slice-type";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 function CheckOut() {
     const dispatch=useAppDispatch()
     const {items}=useAppSelector((store)=>store.cart)
     console.log("items",items)//checking the items
 
-        //subtoal-calculation logic.
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
-    // calculate totals only for selected items if any, else all items
-    const itemsToCalculate =
-        selectedItems.length > 0
-        ? items.filter((item) => selectedItems.includes(item.id!))
-        : items;
+    //redirecting only the slected items from cart page
+    const searchParams = useSearchParams();
+    const selectedItemIds = searchParams.get("items")?.split(",") || [];
+
+    //     //subtoal-calculation logic.
+    // const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    // // calculate totals only for selected items if any, else all items
+    // const itemsToCalculate =
+    //     selectedItems.length > 0
+    //     ? items.filter((item) => selectedItems.includes(item.id!))
+    //     : items;
+    const itemsToCalculate = selectedItemIds.length > 0
+  ? items.filter((item) => selectedItemIds.includes(item.id!))
+  : items;
+
 
     // safe subtotal calculation: ignore null products
     const subtotal = itemsToCalculate.reduce(
@@ -57,14 +66,21 @@ const handleOrderDataSubmission = async (e: FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   console.log("🛒 Cart items:", items);
 
-  const productData = items
-    .filter((item): item is ICartItem & { productId: string } => !!item.productId)
-    .map((item) => ({
-      productId: item.productId,
-      orderQuantity: item.quantity,
-    }));
+  // const productData = items
+  //   .filter((item): item is ICartItem & { productId: string } => !!item.productId)
+  //   .map((item) => ({
+  //     productId: item.productId,
+  //     orderQuantity: item.quantity,
+  //   }));
+  const productData = itemsToCalculate
+  .filter((item): item is ICartItem & { productId: string } => !!item.productId)
+  .map((item) => ({
+    productId: item.productId,
+    orderQuantity: item.quantity,
+  }));
 
-  if (productData.length < items.length) {
+
+  if (productData.length < itemsToCalculate.length){
     console.warn("⚠️ Some cart items were skipped due to missing productId.");
   }
 
@@ -95,7 +111,7 @@ const handleOrderDataSubmission = async (e: FormEvent<HTMLFormElement>) => {
               <div className="px-6 py-8 md:overflow-auto md:h-screen">
                 <div className="space-y-4">
                     {
-                        items.length>0 ? items.map((i:ICartItem)=>(
+                        itemsToCalculate.length > 0 ? itemsToCalculate.map((i: ICartItem) =>(
                             <div key={i.id} className="flex items-start gap-4">
                     <div className="w-24 h-24 flex p-3 shrink-0 bg-white rounded-md">
                       <img
