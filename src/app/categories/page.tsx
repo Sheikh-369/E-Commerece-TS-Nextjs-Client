@@ -6,6 +6,7 @@ import Title from '../components/categories/heading/heading';
 import Drinks from '../components/categories/drinks/drinks';
 import Electronics from '../components/categories/electronics/electronics';
 import Clothing from '../components/categories/clothing/clothing';
+import Groceries from '../components/categories/groceries/groceries';
 
 function Categories() {
   return (
@@ -15,6 +16,7 @@ function Categories() {
         <Drinks/>
         <Electronics/>
         <Clothing/>
+        <Groceries/>
       
     </main>
   );
