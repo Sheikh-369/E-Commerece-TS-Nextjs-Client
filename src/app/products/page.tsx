@@ -1,47 +1,49 @@
-'use client'
-import React, { useEffect, useState, useRef } from 'react'
-import { useAppDispatch, useAppSelector } from '@/lib/store/auth/hooks'
-import { fetchProducts } from '@/lib/store/products/product-slice'
-import { addToCart } from '@/lib/store/cart/cart-slice' // 👈 import cart action
-import { Status } from '@/lib/global-type/type'
-import Link from 'next/link'
-
+"use client";
+import React, { useEffect, useState, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { fetchProducts } from "@/lib/store/products/product-slice";
+import { addToCart } from "@/lib/store/cart/cart-slice"; // 👈 import cart action
+import { Status } from "@/lib/global-type/type";
+import Link from "next/link";
+import { IProductData } from "@/lib/store/products/product-slice-type";
 const carouselImages = [
   {
-    url: 'https://images.unsplash.com/photo-1664455340023-214c33a9d0bd?q=80&w=1032&auto=format&fit=crop',
-    alt: 'Cart with cartoons.',
+    url: "https://images.unsplash.com/photo-1664455340023-214c33a9d0bd?q=80&w=1032&auto=format&fit=crop",
+    alt: "Cart with cartoons.",
   },
   {
-    url: 'https://images.unsplash.com/photo-1594966392038-1a34ee7f0a4b?q=80&w=870&auto=format&fit=crop',
-    alt: 'Multiple pairs of cosmetics lined up on shelves',
+    url: "https://images.unsplash.com/photo-1594966392038-1a34ee7f0a4b?q=80&w=870&auto=format&fit=crop",
+    alt: "Multiple pairs of cosmetics lined up on shelves",
   },
   {
-    url: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80',
-    alt: 'Variety of beauty products and cosmetics',
+    url: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80",
+    alt: "Variety of beauty products and cosmetics",
   },
   {
-    url: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80',
-    alt: 'Assortment of watches and jewelry',
-  }
+    url: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80",
+    alt: "Assortment of watches and jewelry",
+  },
 ];
 
 function Carousel() {
-  const [current, setCurrent] = useState(0)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const delay = 3500
+  const [current, setCurrent] = useState(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const delay = 3500;
 
   const resetTimeout = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-  }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  };
 
   useEffect(() => {
-    resetTimeout()
+    resetTimeout();
     timeoutRef.current = setTimeout(() => {
-      setCurrent((prevIndex) => (prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1))
-    }, delay)
+      setCurrent((prevIndex) =>
+        prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, delay);
 
-    return () => resetTimeout()
-  }, [current])
+    return () => resetTimeout();
+  }, [current]);
 
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
@@ -68,8 +70,8 @@ function Carousel() {
               onClick={() => setCurrent(index)}
               className={`transition-all duration-300 ${
                 current === index
-                  ? 'bg-indigo-600 rounded-lg w-8 h-2'
-                  : 'bg-indigo-300 rounded-full w-2.5 h-2.5 md:w-3 md:h-3'
+                  ? "bg-indigo-600 rounded-lg w-8 h-2"
+                  : "bg-indigo-300 rounded-full w-2.5 h-2.5 md:w-3 md:h-3"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -77,55 +79,53 @@ function Carousel() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default function Products() {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
-  const productState = useAppSelector((state) => state.product)
-  const products = productState.product
-  const status = productState.status
+  const productState = useAppSelector((state) => state.product);
+  const products = productState.product;
+  const status = productState.status;
 
   //succes add to cart pop-up
   const [showToast, setShowToast] = React.useState(false);
 
-
-
   useEffect(() => {
-    dispatch(fetchProducts())
-  }, [dispatch])
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
- const handleAddToCart = async (product: any, quantity: number) => {
-  try {
-    await dispatch(addToCart(product.id, quantity));
+  const handleAddToCart = async (product: IProductData, quantity: number) => {
+    try {
+      await dispatch(addToCart(product.id, quantity));
 
-    // Show toast
-    setShowToast(true);
+      // Show toast
+      setShowToast(true);
 
-    // Hide after 2 seconds
-    setTimeout(() => setShowToast(false), 2000);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-
+      // Hide after 2 seconds
+      setTimeout(() => setShowToast(false), 2000);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   if (status === Status.LOADING) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <p className="text-xl font-semibold">Loading products...</p>
       </div>
-    )
+    );
   }
 
   if (status === Status.ERROR) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p className="text-xl font-semibold text-red-600">Failed to load products.</p>
+        <p className="text-xl font-semibold text-red-600">
+          Failed to load products.
+        </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -159,44 +159,55 @@ export default function Products() {
 
               <Link href={`/product-detail/${product.id}`} passHref>
                 <img
-                  src={product.productImage || 'https://via.placeholder.com/150'}
+                  src={
+                    product.productImage || "https://via.placeholder.com/150"
+                  }
                   alt={product.productName}
                   className="h-24 w-full object-cover rounded-t-lg"
                 />
                 <div className="px-2 py-2">
-                  <p className="text-xs font-bold text-black capitalize mb-1">{product.productName}</p>
+                  <p className="text-xs font-bold text-black capitalize mb-1">
+                    {product.productName}
+                  </p>
                   <p className="text-[10px] text-gray-600 line-clamp-2 h-[24px]">
-                    {product.productDescription || 'No description'}
+                    {product.productDescription || "No description"}
                   </p>
 
                   <div className="flex items-center mt-2">
-  <p className="text-xs font-semibold text-black">Rs. {product.productPrice}</p>
-  {product.oldPrice && (
-    <del className="ml-1 text-[10px] text-gray-600">Rs. {product.oldPrice}</del>
-  )}
+                    <p className="text-xs font-semibold text-black">
+                      Rs. {product.productPrice}
+                    </p>
+                    {product.oldPrice && (
+                      <del className="ml-1 text-[10px] text-gray-600">
+                        Rs. {product.oldPrice}
+                      </del>
+                    )}
 
-  {/* Cart Button */}
-  <button
-    onClick={(e) => {
-      e.preventDefault()
-      handleAddToCart(product,1)
-    }}
-    className="ml-auto text-indigo-600 hover:text-indigo-800"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={16}
-      height={16}
-      fill="currentColor"
-      className="bi bi-cart-plus"
-      viewBox="0 0 16 16"
-    >
-      <path d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 
+                    {/* Cart Button */}
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleAddToCart(product, 1);
+                      }}
+                      className="ml-auto text-indigo-600 hover:text-indigo-800"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={16}
+                        height={16}
+                        fill="currentColor"
+                        className="bi bi-cart-plus"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 
                0 0 1 0 1H8.5V12a.5.5 0 0 
                1-1 0v-1.5H6a.5.5 0 0 1 
                0-1h1.5V8a.5.5 0 0 1 
-               .5-.5z" />
-      <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 
+               .5-.5z"
+                        />
+                        <path
+                          d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 
                0 0 1 .485.379L2.89 3H14.5a.5.5 
                0 0 1 .49.598l-1.5 7A.5.5 
                0 0 1 13 11H4a.5.5 0 0 
@@ -207,21 +218,25 @@ export default function Products() {
                0 0-4zm7 0a2 2 0 1 0 0 4 2 2 
                0 0 0 0-4zm-7 1a1 1 0 1 1 0 
                2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 
-               0 2 1 1 0 0 1 0-2z" />
-    </svg>
-  </button>
-</div>
-
+               0 2 1 1 0 0 1 0-2z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
 
                   <div className="mt-1">
                     {product.productTotalStock > 10 ? (
-                      <p className="text-[10px] text-green-600 font-medium">In Stock</p>
+                      <p className="text-[10px] text-green-600 font-medium">
+                        In Stock
+                      </p>
                     ) : product.productTotalStock > 0 ? (
                       <p className="text-[10px] text-yellow-600 font-medium">
                         Only {product.productTotalStock} left!
                       </p>
                     ) : (
-                      <p className="text-[10px] text-red-600 font-medium">Out of Stock</p>
+                      <p className="text-[10px] text-red-600 font-medium">
+                        Out of Stock
+                      </p>
                     )}
                   </div>
                 </div>
@@ -231,5 +246,5 @@ export default function Products() {
         </section>
       </div>
     </div>
-  )
+  );
 }

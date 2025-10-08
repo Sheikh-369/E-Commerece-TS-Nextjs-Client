@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { ReactNode } from "react";
 import Sidebar from "../components/admin-dashboard/sidebar/sidebar";
 
@@ -22,7 +22,7 @@ const AdminDashboardLayout = ({ children }: Props) => {
                   Dashboard Overview
                 </h1>
                 <p className="text-yellow-200 text-sm mt-1">
-                  Welcome back, here's what's happening today
+                  Welcome back, here&apos;s what&apos;s happening today
                 </p>
               </div>
               <div className="flex items-center space-x-4">
@@ -54,5 +54,3 @@ const AdminDashboardLayout = ({ children }: Props) => {
 };
 
 export default AdminDashboardLayout;
-
-

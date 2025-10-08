@@ -13,7 +13,9 @@ export default function AddProductModal({ onClose }: AddProductModalProps) {
   const dispatch = useAppDispatch();
   const { categories } = useAppSelector((store) => store.categories);
 
-  const [productData, setProductData] = useState<IProductData & { categoryId?: number | string }>({
+  const [productData, setProductData] = useState<
+    IProductData & { categoryId?: number | string }
+  >({
     id: "",
     productName: "",
     productDescription: "",
@@ -34,11 +36,12 @@ export default function AddProductModal({ onClose }: AddProductModalProps) {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, files } = e.target as HTMLInputElement;
-    setProductData((prev) => ({
-      ...prev,
-      //@ts-ignore
-      [name]: name === "productImage" ? files?.[0] : value,
-    }));
+    setProductData((prev) => {
+      if (name === "productImage") {
+        return { ...prev, productImage: files?.[0] || null };
+      }
+      return { ...prev, [name]: value };
+    });
   };
 
   const handleSubmit = (e: FormEvent) => {

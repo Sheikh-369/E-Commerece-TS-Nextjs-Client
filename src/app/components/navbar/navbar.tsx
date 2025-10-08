@@ -18,8 +18,10 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const cartItems = useAppSelector((state) => state.cart.items ?? []);
   //compute count: sum of quantities (safer than length)
-  const cartCount = cartItems.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
-
+  const cartCount = cartItems.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0),
+    0
+  );
 
   const [authModalType, setAuthModalType] = useState<
     "login" | "register" | "forgot-password" | "reset-password" | null
@@ -38,30 +40,41 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="hidden md:flex gap-6 text-gray-700">
-            <a href="/" className="hover:text-blue-500">Home</a>
-            <a href="/shop" className="hover:text-blue-500">Shop</a>
-            <a href="/cart" className="hover:text-blue-500">Cart</a>
-            <a href="/about" className="hover:text-blue-500">About</a>
+            <Link href="/" className="hover:text-blue-500">
+              Home
+            </Link>
+            <Link href="/shop" className="hover:text-blue-500">
+              Shop
+            </Link>
+            <Link href="/cart" className="hover:text-blue-500">
+              Cart
+            </Link>
+            <Link href="/about" className="hover:text-blue-500">
+              About
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">
             <button
-                onClick={() => {
-                  if (token) {
-                    router.push("/user/dashboard/cart");
-                  } else {
-                    setAuthModalType("login");
-                  }
-                }}
-                className="relative inline-flex items-center"
-              >
-                <ShoppingCart size={22} className="text-gray-700 hover:text-blue-600 transition" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
+              onClick={() => {
+                if (token) {
+                  router.push("/user/dashboard/cart");
+                } else {
+                  setAuthModalType("login");
+                }
+              }}
+              className="relative inline-flex items-center"
+            >
+              <ShoppingCart
+                size={22}
+                className="text-gray-700 hover:text-blue-600 transition"
+              />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </button>
             {token ? (
               <button
                 onClick={handleLogout}
@@ -71,9 +84,6 @@ const Navbar: React.FC = () => {
               </button>
             ) : (
               <>
-              
-
-
                 <button
                   onClick={() => setAuthModalType("login")}
                   className="text-sm px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition"
@@ -111,7 +121,7 @@ const Navbar: React.FC = () => {
         <ForgotPasswordModal
           onClose={() => setAuthModalType(null)}
           onSwitchToLogin={() => setAuthModalType("login")}
-          onSwitchToResetPassword={() => setAuthModalType("reset-password")}  // <-- here!
+          onSwitchToResetPassword={() => setAuthModalType("reset-password")} // <-- here!
         />
       )}
 
