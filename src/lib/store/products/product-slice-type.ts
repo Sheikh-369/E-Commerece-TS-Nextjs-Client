@@ -20,7 +20,8 @@ export interface IProductSliceState{
     product:IProductData[],
     selectedProduct: IProductData | null,
     status:Status
-    drinks: IProductData[];//for fetching only drinks
-    electronics: IProductData[];//for fetching only electronics
+    categoryProducts: Record<string, IProductData[]>;
+    // drinks: IProductData[];//for fetching only drinks
+    // electronics: IProductData[];//for fetching only electronics
 }
 

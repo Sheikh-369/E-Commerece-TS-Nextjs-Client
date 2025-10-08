@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const API=axios.create({
-    baseURL:"http://localhost:3500/ecommerce/",
-    headers:{
-        "Content-Type":"application/json",
-        "Accept":"application/json"
-    }
-})
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+const API = axios.create({
+  baseURL: `${BASE_URL}/ecommerce/`,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+});
 
-export default API
+export default API;
