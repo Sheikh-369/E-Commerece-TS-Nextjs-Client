@@ -103,7 +103,7 @@ export default function Products() {
       // Show toast
       setShowToast(true);
 
-      // Hide after 2 seconds
+      // Hides after 2 seconds
       setTimeout(() => setShowToast(false), 2000);
     } catch (err) {
       console.log(err);
