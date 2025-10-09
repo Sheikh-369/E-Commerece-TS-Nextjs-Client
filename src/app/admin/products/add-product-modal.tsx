@@ -25,6 +25,7 @@ export default function AddProductModal({ onClose }: AddProductModalProps) {
     productDiscount: 0,
     productImage: undefined,
     categoryId: "",
+    isFeatured:false
   });
 
   useEffect(() => {
@@ -32,17 +33,34 @@ export default function AddProductModal({ onClose }: AddProductModalProps) {
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value, files } = e.target as HTMLInputElement;
-    setProductData((prev) => {
-      if (name === "productImage") {
-        return { ...prev, productImage: files?.[0] || null };
-      }
-      return { ...prev, [name]: value };
-    });
-  };
+  // const handleChange = (
+  //   e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  // ) => {
+  //   const { name, value, files } = e.target as HTMLInputElement;
+  //   setProductData((prev) => {
+  //     if (name === "productImage") {
+  //       return { ...prev, productImage: files?.[0] || null };
+  //     }
+  //     return { ...prev, [name]: value };
+  //   });
+  // };
+      const handleChange = (
+        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+      ) => {
+        const { name, value, type, checked, files } = e.target as HTMLInputElement;
+
+        setProductData((prev) => {
+          if (name === "productImage") {
+            return { ...prev, productImage: files?.[0] || null };
+          }
+
+          if (type === "checkbox") {
+            return { ...prev, [name]: checked };
+          }
+
+          return { ...prev, [name]: value };
+        });
+      };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -143,6 +161,21 @@ export default function AddProductModal({ onClose }: AddProductModalProps) {
                 ))}
             </select>
           </div>
+          {/* isFeatured Checkbox */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="isFeatured"
+              checked={productData.isFeatured}
+              onChange={handleChange}
+              className="w-4 h-4"
+              id="isFeatured"
+            />
+            <label htmlFor="isFeatured" className="text-sm">
+              Mark as Featured Product
+            </label>
+          </div>
+
 
           {/* Image */}
           <input

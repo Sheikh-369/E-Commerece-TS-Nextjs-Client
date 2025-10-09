@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
+import CarouselOverlay from "../products-overlay/carousal-overlay";
 
 const carouselImages = [
   {
@@ -43,6 +44,7 @@ export default function Carousel() {
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
       <div className="overflow-hidden rounded-3xl shadow-lg relative">
+        <CarouselOverlay/>
         <div
           className="flex transition-transform ease-in-out duration-700"
           style={{ transform: `translateX(-${current * 100}%)` }}

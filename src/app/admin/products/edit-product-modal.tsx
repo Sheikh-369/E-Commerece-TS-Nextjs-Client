@@ -25,29 +25,52 @@ const EditProductModal: React.FC<Props> = ({ product, closeModal }) => {
     category: product.category
       ? { categoryName: product.category.categoryName }
       : undefined,
+      isFeatured:product.isFeatured
   });
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
+  // const handleChange = (
+  //   e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  // ) => {
+  //   const { name, value } = e.target;
 
-    if (
-      name === "productImage" &&
-      e.target instanceof HTMLInputElement &&
-      e.target.files
-    ) {
-      setProductData({
-        ...productData,
-        productImage: e.target.files[0], // File upload
-      });
-    } else {
-      setProductData({
-        ...productData,
-        [name]: value,
-      });
-    }
-  };
+  //   if (
+  //     name === "productImage" &&
+  //     e.target instanceof HTMLInputElement &&
+  //     e.target.files
+  //   ) {
+  //     setProductData({
+  //       ...productData,
+  //       productImage: e.target.files[0], // File upload
+  //     });
+  //   } else {
+  //     setProductData({
+  //       ...productData,
+  //       [name]: value,
+  //     });
+  //   }
+  // };
+    const handleChange = (
+        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      ) => {
+        const { name, value, type, checked, files } = e.target as HTMLInputElement;
+
+        if (name === "productImage" && files) {
+          setProductData({
+            ...productData,
+            productImage: files[0], // File upload
+          });
+        } else if (type === "checkbox") {
+          setProductData({
+            ...productData,
+            [name]: checked,
+          });
+        } else {
+          setProductData({
+            ...productData,
+            [name]: value,
+          });
+        }
+      };
 
   const handleEditProductDataSubmissison = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -152,6 +175,20 @@ const EditProductModal: React.FC<Props> = ({ product, closeModal }) => {
                 </option>
               ))}
             </select>
+            {/* isFeatured Chekbox */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="isFeatured"
+                id="isFeatured"
+                checked={productData.isFeatured}
+                onChange={handleChange}
+                className="w-4 h-4"
+              />
+              <label htmlFor="isFeatured" className="text-sm">
+                Mark as Featured Product
+              </label>
+            </div>
 
             {/* Image */}
             <input

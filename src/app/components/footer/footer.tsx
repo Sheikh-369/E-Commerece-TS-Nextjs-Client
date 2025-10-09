@@ -1,16 +1,21 @@
 'use client';
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 
 function Footer() {
-  const [year, setYear] = useState<number | null>(null)
+  const [year, setYear] = useState<number | null>(null);
 
   useEffect(() => {
-    setYear(new Date().getFullYear())
-  }, [])
+    setYear(new Date().getFullYear());
+  }, []);
 
   return (
-    <footer className="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-200 text-gray-800 py-10">
+    <footer
+      className="text-gray-800 py-10shadow-inner"
+      style={{
+        boxShadow: 'inset 0 6px 10px -8px rgba(0,0,0,0.05)',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p className="text-sm">
           &copy; {year ?? '...'} MyStore. All rights reserved.
@@ -28,7 +33,7 @@ function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

@@ -38,7 +38,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-blue-100 via-purple-100 to-pink-200`}>
         <Provider store={store}>
           <ReduxInitializer /> {/* ✅ Redux-safe component */}
           {!shouldHideNavbar && <Navbar />}

@@ -14,6 +14,7 @@ export interface IProductData {
     categoryName:string
   },
   deletedAt?:string | null,
+  isFeatured:boolean
 }
 
 export interface IProductSliceState{
@@ -21,7 +22,7 @@ export interface IProductSliceState{
     selectedProduct: IProductData | null,
     status:Status
     categoryProducts: Record<string, IProductData[]>;
-    // drinks: IProductData[];//for fetching only drinks
-    // electronics: IProductData[];//for fetching only electronics
+    featured:IProductData[]
+  
 }
 

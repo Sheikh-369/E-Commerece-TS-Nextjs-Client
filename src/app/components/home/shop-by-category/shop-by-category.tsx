@@ -25,43 +25,43 @@ const categories = [
   },
   {
     name: "Drinks",
-    image: "/home/hero/images/beauty.avif",
-    href: "/categories/beauty",
+    image: "/home/hero/images/drinks.avif",
+    href: "/categories/drinks",
   },
   {
     name: "Groceries",
-    image: "/home/hero/images/beauty.avif",
-    href: "/categories/beauty",
+    image: "/home/hero/images/grocery.avif",
+    href: "/categories/groceries",
   },
   {
     name: "Clothing",
-    image: "/home/hero/images/beauty.avif",
-    href: "/categories/beauty",
+    image: "/home/hero/images/clothing.avif",
+    href: "/categories/clothing",
   },
   {
     name: "Hardwares",
-    image: "/home/hero/images/beauty.avif",
-    href: "/categories/beauty",
+    image: "/home/hero/images/hardware.avif",
+    href: "/categories/hardwares",
   },
   {
     name: "Books",
-    image: "/home/hero/images/beauty.avif",
-    href: "/categories/beauty",
+    image: "/home/hero/images/books.avif",
+    href: "/categories/books",
   },
   {
-    name: "Gadgetsy",
-    image: "/home/hero/images/beauty.avif",
-    href: "/categories/beauty",
+    name: "Gadgets",
+    image: "/home/hero/images/gadgets.avif",
+    href: "/categories/gadgets",
   },
   {
     name: "Foods",
-    image: "/home/hero/images/beauty.avif",
-    href: "/categories/beauty",
+    image: "/home/hero/images/food.avif",
+    href: "/categories/foods",
   },
   {
     name: "Furnitures",
-    image: "/home/hero/images/beauty.avif",
-    href: "/categories/beauty",
+    image: "/home/hero/images/furnitures.avif",
+    href: "/categories/furnitures",
   },
   
 ];
@@ -73,7 +73,7 @@ function CategoriesSection() {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
         {categories.map((category) => (
           <Link key={category.name} href={category.href} className="group">
-            <div className="overflow-hidden rounded-lg shadow-md bg-white transition-transform group-hover:scale-105">
+            <div className="overflow-hidden rounded-lg shadow-md bg-pink-100 transition-transform group-hover:scale-105">
               <img
                 src={category.image}
                 alt={category.name}

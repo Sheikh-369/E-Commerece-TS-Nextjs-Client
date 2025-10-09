@@ -8,10 +8,9 @@ import APIWITHTOKEN from "@/lib/http/API-with-token";
 const initialState:IProductSliceState={
     product:[],
     selectedProduct: null,
-    // drinks:[],
-    // electronics:[],
     categoryProducts: {},
-    status:Status.IDLE
+    status:Status.IDLE,
+    featured:[]
 }
 
 const productSlice=createSlice({
@@ -34,12 +33,16 @@ const productSlice=createSlice({
         // setElectronics(state, action) { state.electronics = action.payload },
         setCategoryProducts(state,action: PayloadAction<{ category: string; products: IProductData[] }>) {
             state.categoryProducts[action.payload.category] = action.payload.products;
+        },
+
+        setFeaturedProducts(state, action: PayloadAction<IProductData[]>) {
+          state.featured = action.payload;
         }
 
     }
 })
 
-export const {setStatus,setProduct,setSelectedProduct,setCategoryProducts}=productSlice.actions
+export const {setStatus,setProduct,setSelectedProduct,setCategoryProducts,setFeaturedProducts}=productSlice.actions
 export default productSlice.reducer
 
 //fetch products
@@ -81,47 +84,6 @@ export function fetchProductsByCategory(category: string) {
   };
 }
 
-
-// Thunk for fetching drinks
-// export function fetchDrinks() {
-//   return async function fetchDrinksThunk(dispatch: AppDispatch) {
-//     dispatch(setStatus(Status.LOADING)); // Start loading state
-
-//     try {
-//       const response = await API.get('product/category/drinks'); // Fetch drinks
-//       if (response.status === 200) {
-//         dispatch(setDrinks(response.data.data)) // Update products
-//         dispatch(setStatus(Status.SUCCESS)); // Success state
-//       } else {
-//         dispatch(setStatus(Status.ERROR)); // Error state if failure
-//       }
-//     } catch (error) {
-//       console.error(error);
-//       dispatch(setStatus(Status.ERROR)); // Handle error
-//     }
-//   };
-// }
-
-// Thunk for fetching electronics
-// export function fetchElectronics() {
-//   return async function fetchElectronicsThunk(dispatch: AppDispatch) {
-//     dispatch(setStatus(Status.LOADING)); // Start loading state
-
-//     try {
-//       const response = await API.get('product/category/electronics'); // Fetch electronics
-//       if (response.status === 200) {
-//         dispatch(setElectronics(response.data.data)) // Update products
-//         dispatch(setStatus(Status.SUCCESS)); // Success state
-//       } else {
-//         dispatch(setStatus(Status.ERROR)); // Error state if failure
-//       }
-//     } catch (error) {
-//       console.error(error);
-//       dispatch(setStatus(Status.ERROR)); // Handle error
-//     }
-//   };
-// }
-
 //fetch single product by id
 export function fetchProductById(id: string) {
   return async function fetchProductByIdThunk(dispatch: AppDispatch) {
@@ -140,6 +102,27 @@ export function fetchProductById(id: string) {
     }
   };
 }
+
+//fetch product by isFeatured
+export function fetchFeaturedProducts() {
+  return async function fetchFeaturedProductsThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+
+    try {
+      const response = await API.get('product/featured'); // your backend endpoint
+      if (response.status === 200) {
+        dispatch(setFeaturedProducts(response.data.data)); // IMPORTANT: dispatch action to update state here
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
 
 //add product
 export function addProduct(productData:IProductData){
@@ -188,6 +171,7 @@ export function updateProduct(productData: IProductData, id: string) {
   };
 }
 
+//delete product
 export function deleteProduct(id: string) {
   return async function deleteProductThunk(dispatch: AppDispatch) {
     dispatch(setStatus(Status.LOADING));
