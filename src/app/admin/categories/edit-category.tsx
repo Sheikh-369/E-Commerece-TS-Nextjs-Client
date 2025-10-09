@@ -1,5 +1,5 @@
 "use client";
-import { useAppDispatch } from "@/lib/store/auth/hooks";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { updateCategory } from "@/lib/store/category/category-slice";
 import { ICategoryData } from "@/lib/store/category/category-slice-type";
 import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
@@ -18,7 +18,7 @@ export default function EditCategoryModal({
   const dispatch = useAppDispatch();
 
   const [categoryData, setCategoryData] = useState<ICategoryData>({
-    id:"", // default (will be overridden by category prop)
+    id: "", // default (will be overridden by category prop)
     categoryName: "",
     categoryDescription: "",
   });
@@ -46,7 +46,7 @@ export default function EditCategoryModal({
 
   const handleDataSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateCategory(categoryData,categoryData.id!));
+    dispatch(updateCategory(categoryData, categoryData.id!));
     onClose();
   };
 

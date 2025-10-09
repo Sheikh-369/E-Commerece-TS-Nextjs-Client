@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import RegisterModal from "../auth/register-modal";
 import LoginModal from "../auth/login-modal";
 import ForgotPasswordModal from "../auth/forgot-password-modal";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { userLogout } from "@/lib/store/auth/auth-slice";
 import ResetPasswordModal from "../auth/reset-password";
 import Link from "next/link";
@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-200 shadow-sm">
+      <nav className="sticky top-0 z-50 bg-sky-100 border-b border-gray-200 shadow-sm rounded">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="text-2xl font-bold text-blue-600 cursor-pointer">
             E-Shop

@@ -1,5 +1,5 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { updateProduct } from "@/lib/store/products/product-slice";
 import { IProductData } from "@/lib/store/products/product-slice-type";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -48,7 +48,6 @@ const EditProductModal: React.FC<Props> = ({ product, closeModal }) => {
       });
     }
   };
-
 
   const handleEditProductDataSubmissison = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

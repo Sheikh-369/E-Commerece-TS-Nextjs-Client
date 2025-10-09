@@ -1,61 +1,76 @@
 "use client";
+
 import React, { useEffect } from "react";
+import { useParams, notFound } from "next/navigation";
+import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
+import { fetchProductsByCategory } from "@/lib/store/products/product-slice";
 import { IProductData } from "@/lib/store/products/product-slice-type";
 import { Status } from "@/lib/global-type/type";
-import { fetchProductsByCategory } from "@/lib/store/products/product-slice";
-import Link from "next/link";
-import AddToCartButton from "../../common/add-to-cart-buutton";
+import AddToCartButton from "@/app/components/common/add-to-cart-buutton";
 
-function Drinks() {
+const CATEGORY_NAMES: Record<string, string> = {
+  drinks: "Drinks",
+  electronics: "Electronics",
+  clothing: "Clothing",
+  groceries: "Groceries",
+  // Add more categories here as needed
+};
+
+function CategoryPage() {
+  const params = useParams();
+  const categoryParam = params?.category;
+
+  // ✅ Safely extract categoryKey as string
+  const categoryKey =
+    typeof categoryParam === "string"
+      ? categoryParam
+      : Array.isArray(categoryParam) && categoryParam.length > 0
+      ? categoryParam[0]
+      : undefined;
+
+  // 🚫 Redirect to 404 if invalid
+  if (!categoryKey) {
+    notFound();
+  }
+
   const dispatch = useAppDispatch();
 
-  // Fallback to empty array if undefined
-  const categoryProducts = useAppSelector(
-    (state) => state.product.categoryProducts["drinks"] ?? []
+  const products = useAppSelector(
+    (state) => state.product.categoryProducts[categoryKey] ?? []
   );
-  const status = useAppSelector((store) => store.product.status);
+  const status = useAppSelector((state) => state.product.status);
 
   useEffect(() => {
-    dispatch(fetchProductsByCategory("drinks"));
-  }, [dispatch]);
+    dispatch(fetchProductsByCategory(categoryKey));
+  }, [dispatch, categoryKey]);
+
+  const handleAddToCart = (product: IProductData, qty: number) => {
+    console.log("Add to cart:", product.productName, qty);
+  };
 
   return (
     <div className="w-[98%] mx-auto px-4 sm:px-6 lg:px-8 mt-7">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-semibold text-left">Drinks</h1>
-        <div className="mt-4 text-right">
-          <Link href="/categories/drinks">
-            <button className="group relative inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-medium rounded-md shadow-md hover:from-indigo-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300">
-              <span>View All Drinks</span>
-              <svg
-                className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </Link>
-        </div>
+        <h1 className="text-3xl font-semibold capitalize text-left">
+          {CATEGORY_NAMES[categoryKey] || categoryKey}
+        </h1>
+        <Link href="/categories">
+          <button className="text-sm text-indigo-600 hover:text-indigo-800 underline">
+            ← Back to Categories
+          </button>
+        </Link>
       </div>
 
       {status === Status.LOADING && <p>Loading...</p>}
       {status === Status.ERROR && <p>Failed to load products.</p>}
 
-      {Array.isArray(categoryProducts) && categoryProducts.length > 0 && (
+      {Array.isArray(products) && products.length > 0 ? (
         <section
           id="Products"
           className="grid grid-cols-2 sm:grid-cols-4 gap-4"
-          style={{ maxHeight: "calc(2 * (12rem + 1rem))", overflow: "hidden" }}
         >
-          {categoryProducts.slice(0, 8).map((product: IProductData) => (
+          {products.map((product: IProductData) => (
             <div
               key={product.id}
               className="relative bg-white shadow-md rounded-lg duration-500 hover:scale-105 hover:shadow-xl text-xs"
@@ -66,7 +81,7 @@ function Drinks() {
                 </div>
               )}
 
-              <a href={`/product-detail/${product.id}`}>
+              <Link href={`/product-detail/${product.id}`}>
                 <img
                   src={
                     product.productImage || "https://via.placeholder.com/150"
@@ -111,13 +126,19 @@ function Drinks() {
                     )}
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           ))}
         </section>
+      ) : (
+        status !== Status.LOADING && (
+          <p className="mt-8 text-center text-sm text-gray-600">
+            No products found in this category.
+          </p>
+        )
       )}
     </div>
   );
 }
 
-export default Drinks;
+export default CategoryPage;

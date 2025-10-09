@@ -1,6 +1,9 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
-import { deleteCategory, fetchAllCategories } from "@/lib/store/category/category-slice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
+import {
+  deleteCategory,
+  fetchAllCategories,
+} from "@/lib/store/category/category-slice";
 import React, { useEffect, useState } from "react";
 import AddCategoryModal from "./add-category";
 import EditCategoryModal from "./edit-category";
@@ -47,33 +50,34 @@ function CAtegories() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   //edit category
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<ICategoryData | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] =
+    useState<ICategoryData | null>(null);
 
-    //delete logic
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [categoryToDelete, setCategoryToDelete] = useState<ICategoryData | null>(null);
+  //delete logic
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] =
+    useState<ICategoryData | null>(null);
   return (
     <>
       <div className="flex flex-col">
         {/* Add Category Modal*/}
         <AddCategoryModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
-      {/* Edit Category Modal */}
-      <EditCategoryModal
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        category={selectedCategory}
-      />
-      {/* Delete Category Modal */}
-      <DeleteCategoryModal
-        categoryToDelete={categoryToDelete}
-        isOpen={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
         />
-
+        {/* Edit Category Modal */}
+        <EditCategoryModal
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          category={selectedCategory}
+        />
+        {/* Delete Category Modal */}
+        <DeleteCategoryModal
+          categoryToDelete={categoryToDelete}
+          isOpen={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+        />
 
         <div className=" overflow-x-auto">
           <div className="min-w-full inline-block align-middle">
@@ -105,7 +109,10 @@ function CAtegories() {
                   className="block w-80 h-11 pr-5 pl-12 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none"
                   placeholder="Search for company"
                 />
-                <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+                >
                   + Category
                 </button>
               </div>
@@ -166,10 +173,13 @@ function CAtegories() {
                       </td>
                       <td className=" px-2 py-1 ">
                         <div className="flex items-center gap-1">
-                          <button onClick={() => {
-                setSelectedCategory(c);
-                setIsEditOpen(true);}}
-               className="p-2  rounded-full  group transition-all duration-500  flex item-center">
+                          <button
+                            onClick={() => {
+                              setSelectedCategory(c);
+                              setIsEditOpen(true);
+                            }}
+                            className="p-2  rounded-full  group transition-all duration-500  flex item-center"
+                          >
                             <svg
                               className="cursor-pointer"
                               width={20}
@@ -186,7 +196,13 @@ function CAtegories() {
                             </svg>
                           </button>
                           {/* Delete Button */}
-                          <button onClick={() => { setCategoryToDelete(c); setDeleteModalOpen(true); }} className="p-2 rounded-full  group transition-all duration-500  flex item-center">
+                          <button
+                            onClick={() => {
+                              setCategoryToDelete(c);
+                              setDeleteModalOpen(true);
+                            }}
+                            className="p-2 rounded-full  group transition-all duration-500  flex item-center"
+                          >
                             <svg
                               width={20}
                               height={20}

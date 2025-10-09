@@ -1,5 +1,5 @@
 "use client";
-import { useAppDispatch } from "@/lib/store/auth/hooks";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { addCategory } from "@/lib/store/category/category-slice";
 import { ICategoryData } from "@/lib/store/category/category-slice-type";
 import React, { ChangeEvent, FormEvent, useState } from "react";

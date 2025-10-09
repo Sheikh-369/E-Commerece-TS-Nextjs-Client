@@ -2,7 +2,7 @@
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Status } from "@/lib/global-type/type";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { IUserData } from "@/lib/store/auth/auth-slice-type";
 import { userRegister } from "@/lib/store/auth/auth-slice";
 
@@ -11,7 +11,10 @@ interface AuthModalProps {
   onSwitchToLogin: () => void;
 }
 
-const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) => {
+const RegisterModal: React.FC<AuthModalProps> = ({
+  onClose,
+  onSwitchToLogin,
+}) => {
   const dispatch = useAppDispatch();
   const { registerStatus } = useAppSelector((store) => store.auth);
 
@@ -32,10 +35,13 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) =
     }));
   };
 
-  const handleRegisterDataSubmission = async (e: FormEvent<HTMLFormElement>) => {
+  const handleRegisterDataSubmission = async (
+    e: FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
-    const { userName, userEmail, userPassword, userPhoneNumber } = userRegisterData;
+    const { userName, userEmail, userPassword, userPhoneNumber } =
+      userRegisterData;
 
     if (!userName || !userEmail || !userPassword || !userPhoneNumber) {
       setError("All fields are required");
@@ -67,7 +73,9 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) =
           &times;
         </button>
 
-        <h2 className="text-xl font-semibold mb-4 text-center">Create an Account</h2>
+        <h2 className="text-xl font-semibold mb-4 text-center">
+          Create an Account
+        </h2>
 
         <form className="space-y-4" onSubmit={handleRegisterDataSubmission}>
           <input
@@ -114,7 +122,9 @@ const RegisterModal: React.FC<AuthModalProps> = ({ onClose, onSwitchToLogin }) =
           </button>
 
           {registerStatus === Status.ERROR && (
-            <p className="text-red-600 text-sm text-center">Something went wrong. Try again.</p>
+            <p className="text-red-600 text-sm text-center">
+              Something went wrong. Try again.
+            </p>
           )}
         </form>
 

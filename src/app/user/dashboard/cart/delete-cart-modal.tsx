@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useAppDispatch } from "@/lib/store/auth/hooks";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { ICartItem } from "@/lib/store/cart/cart-slice-type";
 import { deleteCartItems } from "@/lib/store/cart/cart-slice";
 
@@ -16,31 +16,30 @@ export default function DeleteCartItemModal({
   const dispatch = useAppDispatch();
 
   // Confirm deletion
-   const confirmDelete = async () => {
+  const confirmDelete = async () => {
     if (!itemToDelete?.id) return; // delete by cart item id
     try {
-        await dispatch(deleteCartItems(itemToDelete.id));
+      await dispatch(deleteCartItems(itemToDelete.id));
     } catch (error) {
-        console.error(error);
+      console.error(error);
     } finally {
-        onClose();
+      onClose();
     }
-};
-
-
+  };
 
   if (!isOpen || !itemToDelete) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
       <div className="bg-gradient-to-r from-red-600 to-red-700 shadow-xl rounded-lg p-6 w-96 border border-red-800 pointer-events-auto">
-        <h2 className="text-lg font-semibold mb-3 text-white">Confirm Deletion</h2>
+        <h2 className="text-lg font-semibold mb-3 text-white">
+          Confirm Deletion
+        </h2>
         <p className="text-sm text-red-100 mb-5">
           Are you sure you want to delete{" "}
           <strong className="text-white">
-  {itemToDelete.product?.productName || "Deleted Product"}
-</strong>
-
+            {itemToDelete.product?.productName || "Deleted Product"}
+          </strong>
         </p>
         <div className="flex justify-end gap-3">
           <button

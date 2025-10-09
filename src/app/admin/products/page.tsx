@@ -1,5 +1,5 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { fetchProducts } from "@/lib/store/products/product-slice";
 import React, { useEffect, useState } from "react";
 import AddProductModal from "./add-product-modal";
@@ -18,16 +18,18 @@ function AdminProducts() {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
 
   //edit logic
-  const [editProductModalOpen, setEditProductModalOpen] = useState(false);//edit part
-  const [selectedProduct, setSelectedProduct] = useState<IProductData | null>(null);//edit part
+  const [editProductModalOpen, setEditProductModalOpen] = useState(false); //edit part
+  const [selectedProduct, setSelectedProduct] = useState<IProductData | null>(
+    null
+  ); //edit part
 
-    //edit part
-    const openEditProductModal = (teacher: IProductData) => {
-      setSelectedProduct(teacher);
-      setEditProductModalOpen(true);
-    };
+  //edit part
+  const openEditProductModal = (teacher: IProductData) => {
+    setSelectedProduct(teacher);
+    setEditProductModalOpen(true);
+  };
 
-    //edit part
+  //edit part
   const closeEditProductModal = () => {
     setEditProductModalOpen(false);
     setSelectedProduct(null);
@@ -35,45 +37,46 @@ function AdminProducts() {
 
   //filtering products according to category
   const [selectedCategory, setSelectedCategory] = useState("");
-  
-  // Search logic  
-  const [searchedText, setSearchedText] = useState<string>("")
 
-const finalFilteredData = product.filter((p) => {
-  // Category filter
-  const matchesCategory = selectedCategory
-    ? p.category?.categoryName === selectedCategory
-    : true;
+  // Search logic
+  const [searchedText, setSearchedText] = useState<string>("");
 
-  // Search filter
-  const searchLower = searchedText.toLowerCase();
-  const matchesSearch =
-    p.productName.toLowerCase().includes(searchLower) ||
-    p.productPrice.toString().toLowerCase().includes(searchLower) ||
-    (p.productDescription?.toLowerCase() || "").includes(searchLower);
+  const finalFilteredData = product.filter((p) => {
+    // Category filter
+    const matchesCategory = selectedCategory
+      ? p.category?.categoryName === selectedCategory
+      : true;
 
-  // Return only if BOTH match
-  return matchesCategory && matchesSearch;
-});
+    // Search filter
+    const searchLower = searchedText.toLowerCase();
+    const matchesSearch =
+      p.productName.toLowerCase().includes(searchLower) ||
+      p.productPrice.toString().toLowerCase().includes(searchLower) ||
+      (p.productDescription?.toLowerCase() || "").includes(searchLower);
 
+    // Return only if BOTH match
+    return matchesCategory && matchesSearch;
+  });
 
   useEffect(() => {
     dispatch(fetchProducts());
     dispatch(fetchAllCategories());
   }, [dispatch]);
 
-    //delete logic
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [productToDelete, setProductToDelete] = useState<IProductData | null>(null);
+  //delete logic
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<IProductData | null>(
+    null
+  );
 
   return (
     <>
-    {/* Delete Category Modal */}
-          <DeleteProductModal
-            productToDelete={productToDelete}
-            isOpen={deleteModalOpen}
-            onClose={() => setDeleteModalOpen(false)}
-            />
+      {/* Delete Category Modal */}
+      <DeleteProductModal
+        productToDelete={productToDelete}
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+      />
 
       {/* Filtering Categories */}
       <div className="mb-4 w-64">
@@ -116,10 +119,13 @@ const finalFilteredData = product.filter((p) => {
           </svg>
         </div>
       </div>
-             {/*Edit Modal */}
+      {/*Edit Modal */}
       {editProductModalOpen && selectedProduct && (
-    <EditProductModal product={selectedProduct} closeModal={closeEditProductModal} />
-    )}
+        <EditProductModal
+          product={selectedProduct}
+          closeModal={closeEditProductModal}
+        />
+      )}
       {/* Table */}
       <div className="flex flex-col">
         {/* Add Product Modal */}
@@ -152,8 +158,8 @@ const finalFilteredData = product.filter((p) => {
                   id="default-search"
                   className="block w-80 h-11 pl-12 pr-4 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-sky-300 rounded-full placeholder-gray-400 focus:outline-none"
                   placeholder="Search for company"
-                    value={searchedText}
-                    onChange={(e) => setSearchedText(e.target.value)}
+                  value={searchedText}
+                  onChange={(e) => setSearchedText(e.target.value)}
                 />
               </div>
 
@@ -241,7 +247,6 @@ const finalFilteredData = product.filter((p) => {
                       key={p.id}
                       className="bg-sky-100 transition-all duration-500 hover:bg-sky-400"
                     >
-
                       <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
                         {p.productImage ? (
                           <img
@@ -278,22 +283,29 @@ const finalFilteredData = product.filter((p) => {
                         {p.productDiscount}%
                       </td>
                       <td className="px-3 py-2 text-sm font-medium text-gray-900 max-w-xs relative group">
-  <span className="inline-block truncate max-w-[120px] cursor-pointer">
-    {(p.productDescription ? p.productDescription.split(" ").slice(0, 3).join(" ") : "")}...
-  </span>
-  {p.productDescription && (
-    <div className="absolute left-0 bottom-full mb-1 w-64 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-      {p.productDescription}
-    </div>
-  )}
-</td>
-
-
+                        <span className="inline-block truncate max-w-[120px] cursor-pointer">
+                          {p.productDescription
+                            ? p.productDescription
+                                .split(" ")
+                                .slice(0, 3)
+                                .join(" ")
+                            : ""}
+                          ...
+                        </span>
+                        {p.productDescription && (
+                          <div className="absolute left-0 bottom-full mb-1 w-64 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                            {p.productDescription}
+                          </div>
+                        )}
+                      </td>
 
                       <td className=" p-5 ">
                         <div className="flex items-center gap-1">
                           {/* Edit Button */}
-                          <button onClick={() => openEditProductModal(p)} className="p-2  rounded-full  group transition-all duration-500  flex item-center">
+                          <button
+                            onClick={() => openEditProductModal(p)}
+                            className="p-2  rounded-full  group transition-all duration-500  flex item-center"
+                          >
                             <svg
                               className="cursor-pointer"
                               width={20}
@@ -310,7 +322,13 @@ const finalFilteredData = product.filter((p) => {
                             </svg>
                           </button>
                           {/* Delete Button */}
-                          <button onClick={() => { setProductToDelete(p); setDeleteModalOpen(true); }} className="p-2 rounded-full  group transition-all duration-500  flex item-center">
+                          <button
+                            onClick={() => {
+                              setProductToDelete(p);
+                              setDeleteModalOpen(true);
+                            }}
+                            className="p-2 rounded-full  group transition-all duration-500  flex item-center"
+                          >
                             <svg
                               width={20}
                               height={20}

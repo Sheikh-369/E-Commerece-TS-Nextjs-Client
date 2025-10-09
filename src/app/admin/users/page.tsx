@@ -1,5 +1,5 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { fetchAllUsers } from "@/lib/store/user/user-slice";
 import React, { useEffect, useState } from "react";
 
@@ -235,4 +235,3 @@ function Users() {
 }
 
 export default Users;
-

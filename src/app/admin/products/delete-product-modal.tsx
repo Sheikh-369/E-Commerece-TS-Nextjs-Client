@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useAppDispatch } from "@/lib/store/auth/hooks";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { IProductData } from "@/lib/store/products/product-slice-type";
 import { deleteProduct } from "@/lib/store/products/product-slice";
 
@@ -32,7 +32,9 @@ export default function DeleteProductModal({
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
       <div className="bg-gradient-to-r from-red-600 to-red-700 shadow-xl rounded-lg p-6 w-96 border border-red-800 pointer-events-auto">
-        <h2 className="text-lg font-semibold mb-3 text-white">Confirm Deletion</h2>
+        <h2 className="text-lg font-semibold mb-3 text-white">
+          Confirm Deletion
+        </h2>
         <p className="text-sm text-red-100 mb-5">
           Are you sure you want to delete{" "}
           <strong className="text-white">{productToDelete.productName}</strong>?

@@ -1,114 +1,51 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { fetchProducts } from "@/lib/store/products/product-slice";
 import { addToCart } from "@/lib/store/cart/cart-slice"; // 👈 import cart action
 import { Status } from "@/lib/global-type/type";
 import Link from "next/link";
 import { IProductData } from "@/lib/store/products/product-slice-type";
-const carouselImages = [
-  {
-    url: "https://images.unsplash.com/photo-1664455340023-214c33a9d0bd?q=80&w=1032&auto=format&fit=crop",
-    alt: "Cart with cartoons.",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1594966392038-1a34ee7f0a4b?q=80&w=870&auto=format&fit=crop",
-    alt: "Multiple pairs of cosmetics lined up on shelves",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80",
-    alt: "Variety of beauty products and cosmetics",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80",
-    alt: "Assortment of watches and jewelry",
-  },
-];
-
-function Carousel() {
-  const [current, setCurrent] = useState(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const delay = 3500;
-
-  const resetTimeout = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-  };
-
-  useEffect(() => {
-    resetTimeout();
-    timeoutRef.current = setTimeout(() => {
-      setCurrent((prevIndex) =>
-        prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
-      );
-    }, delay);
-
-    return () => resetTimeout();
-  }, [current]);
-
-  return (
-    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-      <div className="overflow-hidden rounded-3xl shadow-lg relative">
-        <div
-          className="flex transition-transform ease-in-out duration-700"
-          style={{ transform: `translateX(-${current * 100}%)` }}
-        >
-          {carouselImages.map(({ url, alt }, index) => (
-            <img
-              key={index}
-              src={url}
-              alt={alt}
-              className="w-full flex-shrink-0 object-cover h-40 sm:h-56 md:h-64 rounded-3xl"
-            />
-          ))}
-        </div>
-
-        {/* Dots */}
-        <div className="absolute bottom-4 right-8 flex space-x-3 z-20">
-          {carouselImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrent(index)}
-              className={`transition-all duration-300 ${
-                current === index
-                  ? "bg-indigo-600 rounded-lg w-8 h-2"
-                  : "bg-indigo-300 rounded-full w-2.5 h-2.5 md:w-3 md:h-3"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+import Carousel from "../components/products/carousal/carsoul";
+import { useRouter } from "next/navigation";
+import AddToCartButton from "../components/common/add-to-cart-buutton";
 
 export default function Products() {
   const dispatch = useAppDispatch();
-
   const productState = useAppSelector((state) => state.product);
   const products = productState.product;
   const status = productState.status;
+  const router = useRouter();
+
+  //user presence in the page
+  // const user = useAppSelector((state) => state.auth.user);
+  //toast message
+  const [errorToast, setErrorToast] = useState(false);
 
   //succes add to cart pop-up
-  const [showToast, setShowToast] = React.useState(false);
+  // const [showToast, setShowToast] = React.useState(false);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const handleAddToCart = async (product: IProductData, quantity: number) => {
-    try {
-      await dispatch(addToCart(product.id, quantity));
+  // const handleAddToCart = async (product: IProductData, quantity: number) => {
+  //   if (!user) {
+  //     // User not logged in
+  //     setErrorToast(true);
+  //     setTimeout(() => setErrorToast(false), 2000);
+  //     return;
+  //   }
 
-      // Show toast
-      setShowToast(true);
+  //   try {
+  //     await dispatch(addToCart(product.id, quantity));
 
-      // Hides after 2 seconds
-      setTimeout(() => setShowToast(false), 2000);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  //     setShowToast(true);
+  //     setTimeout(() => setShowToast(false), 2000);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   if (status === Status.LOADING) {
     return (
@@ -131,11 +68,11 @@ export default function Products() {
   return (
     <div className="bg-sky-50 min-h-screen pb-16">
       <Carousel />
-      {/* Item added to cart pop-up */}
-      {showToast && (
+      {/* User trying to add to cart without being logged in */}
+      {errorToast && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-green-600 text-white px-6 py-3 rounded shadow-lg">
-            Item added to cart!
+          <div className="bg-red-600 text-white px-6 py-3 rounded shadow-lg">
+            Please log in to add items to your cart.
           </div>
         </div>
       )}
@@ -184,11 +121,11 @@ export default function Products() {
                     )}
 
                     {/* Cart Button */}
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleAddToCart(product, 1);
-                      }}
+                    {/* <button
+                      // onClick={(e) => {
+                      //   e.preventDefault();
+                      //   handleAddToCart(product, 1);
+                      // }}
                       className="ml-auto text-indigo-600 hover:text-indigo-800"
                     >
                       <svg
@@ -221,7 +158,8 @@ export default function Products() {
                0 2 1 1 0 0 1 0-2z"
                         />
                       </svg>
-                    </button>
+                    </button> */}
+                    <AddToCartButton product={product} />
                   </div>
 
                   <div className="mt-1">

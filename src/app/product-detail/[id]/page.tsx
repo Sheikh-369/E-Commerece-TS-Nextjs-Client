@@ -1,44 +1,44 @@
-'use client'
+"use client";
 
-import React, { useEffect } from 'react'
-import { useParams } from 'next/navigation'
-import { useAppDispatch, useAppSelector } from '@/lib/store/auth/hooks'
-import { Status } from '@/lib/global-type/type'
-import { fetchProductById } from '@/lib/store/products/product-slice'
-import { addToCart } from '@/lib/store/cart/cart-slice'
+import React, { useEffect } from "react";
+import { useParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
+import { Status } from "@/lib/global-type/type";
+import { fetchProductById } from "@/lib/store/products/product-slice";
+import { addToCart } from "@/lib/store/cart/cart-slice";
 
 function ProductDetail() {
-  const { id } = useParams()
-  const dispatch = useAppDispatch()
+  const { id } = useParams();
+  const dispatch = useAppDispatch();
 
   // Quantity control logic
-  const [quantity, setQuantity] = React.useState(1)
+  const [quantity, setQuantity] = React.useState(1);
 
-  const productSlice = useAppSelector((state) => state.product)
-  const { selectedProduct: product, status } = productSlice
+  const productSlice = useAppSelector((state) => state.product);
+  const { selectedProduct: product, status } = productSlice;
 
   // Debug log
-  console.log('ProductDetail: id', id)
-  console.log('Product slice state', productSlice)
+  console.log("ProductDetail: id", id);
+  console.log("Product slice state", productSlice);
 
   // Add to cart logic
   const handleAddToCart = () => {
-    if (!product) return
-    dispatch(addToCart(product.id,quantity))
-  }
+    if (!product) return;
+    dispatch(addToCart(product.id, quantity));
+  };
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchProductById(id as string))
+      dispatch(fetchProductById(id as string));
     }
-  }, [dispatch, id])
+  }, [dispatch, id]);
 
   if (status === Status.LOADING) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <p className="text-xl font-semibold">Loading product details...</p>
       </div>
-    )
+    );
   }
 
   if (status === Status.ERROR) {
@@ -48,7 +48,7 @@ function ProductDetail() {
           Failed to load product.
         </p>
       </div>
-    )
+    );
   }
 
   // If status is SUCCESS but product is still null or undefined
@@ -57,7 +57,7 @@ function ProductDetail() {
       <div className="flex justify-center items-center min-h-screen">
         <p className="text-xl font-semibold">No product data found.</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -66,7 +66,7 @@ function ProductDetail() {
         {/* Product Image */}
         <img
           className="w-[556px] ml-3 mr-6 rounded-xl object-contain"
-          src={product.productImage || 'https://via.placeholder.com/500'}
+          src={product.productImage || "https://via.placeholder.com/500"}
           alt={product.productName}
         />
 
@@ -77,7 +77,7 @@ function ProductDetail() {
               {product.productName}
             </h1>
             <span className="text-sm text-[#2C742F] px-2 py-1 bg-[#20B526] bg-opacity-20">
-              {product.productTotalStock > 0 ? 'In Stock' : 'Out of Stock'}
+              {product.productTotalStock > 0 ? "In Stock" : "Out of Stock"}
             </span>
           </div>
 
@@ -102,7 +102,7 @@ function ProductDetail() {
 
           {/* Description */}
           <p className="w-[500px] text-justify text-[#7f7f7f] text-sm font-normal mt-4 leading-[21px]">
-            {product.productDescription || 'No description available.'}
+            {product.productDescription || "No description available."}
           </p>
 
           {/* Quantity Selector & Add to Cart */}
@@ -147,14 +147,14 @@ function ProductDetail() {
                 Category:
               </span>
               <span className="text-[#7f7f7f] text-sm font-normal leading-[21px]">
-                {product.category?.categoryName || 'Uncategorized'}
+                {product.category?.categoryName || "Uncategorized"}
               </span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ProductDetail
+export default ProductDetail;

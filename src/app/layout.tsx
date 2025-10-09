@@ -1,61 +1,3 @@
-// 'use client';
-// import { Geist, Geist_Mono } from "next/font/google";
-// import "./globals.css";
-// import { Provider } from "react-redux";
-// import store from "@/lib/store/store";
-// import Navbar from "./components/navbar/navbar";
-// import { usePathname } from "next/navigation";
-// import { useAppDispatch } from "@/lib/store/auth/hooks";
-// import { useEffect } from "react";
-// import { loadUserFromStorage } from "@/lib/store/auth/auth-slice";
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
-
-// export default function RootLayout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>) {
-//   const pathname = usePathname();
-//   const dispatch=useAppDispatch()
-
-
-
-//   // List all routes where navbar should be hidden
-//   const hideNavbarRoutes = ["/admin", "/admin/products", "/admin/settings","/user"];
-
-//   const shouldHideNavbar = hideNavbarRoutes.some((route) =>
-//     pathname.startsWith(route)
-//   );
-
-//   useEffect(() => {
-//     dispatch(loadUserFromStorage());
-//   }, [dispatch]);
-
-//   return (
-//     <html lang="en">
-//       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-//         <Provider store={store}>
-//           {!shouldHideNavbar && <Navbar />}
-//           {children}
-//         </Provider>
-//       </body>
-//     </html>
-//   );
-// }
-
-
-//part 2
-
-
 'use client';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -64,6 +6,7 @@ import store from "@/lib/store/store";
 import Navbar from "./components/navbar/navbar";
 import ReduxInitializer from "./components/ReduxInitializer"; // 👈 import new component
 import { usePathname } from "next/navigation";
+import Footer from "./components/footer/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,11 +24,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-
+  //navbar blockage
   const hideNavbarRoutes = ["/admin", "/admin/products", "/admin/settings", "/user"];
   const shouldHideNavbar = hideNavbarRoutes.some((route) =>
     pathname.startsWith(route)
   );
+
+  //footer blockage
+    // Define routes where footer should NOT be shown
+  const hideFooterRoutes = ["/admin", "/admin/products", "/admin/settings", "/user"];
+
+  const shouldHideFooter = hideFooterRoutes.includes(pathname);
 
   return (
     <html lang="en">
@@ -94,6 +43,7 @@ export default function RootLayout({
           <ReduxInitializer /> {/* ✅ Redux-safe component */}
           {!shouldHideNavbar && <Navbar />}
           {children}
+          {!shouldHideFooter && <Footer />}
         </Provider>
       </body>
     </html>

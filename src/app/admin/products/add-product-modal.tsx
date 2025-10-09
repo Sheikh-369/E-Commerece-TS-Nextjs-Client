@@ -1,5 +1,5 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { fetchAllCategories } from "@/lib/store/category/category-slice";
 import { addProduct, fetchProducts } from "@/lib/store/products/product-slice";
 import { IProductData } from "@/lib/store/products/product-slice-type";

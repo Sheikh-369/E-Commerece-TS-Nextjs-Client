@@ -3,7 +3,7 @@
 import { Status } from "@/lib/global-type/type";
 import { forgotPassword } from "@/lib/store/auth/auth-slice";
 import { IUserData } from "@/lib/store/auth/auth-slice-type";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
 
 interface ForgotPasswordModalProps {
@@ -62,7 +62,9 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           &times;
         </button>
 
-        <h2 className="text-xl font-semibold mb-4 text-center">Forgot Password</h2>
+        <h2 className="text-xl font-semibold mb-4 text-center">
+          Forgot Password
+        </h2>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <input
@@ -85,7 +87,9 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           </button>
 
           {status === Status.ERROR && (
-            <p className="text-red-600 text-sm text-center">Failed to send reset link.</p>
+            <p className="text-red-600 text-sm text-center">
+              Failed to send reset link.
+            </p>
           )}
         </form>
 

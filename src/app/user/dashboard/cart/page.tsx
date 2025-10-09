@@ -1,5 +1,5 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import {
   deleteCartItems,
   deleteMultipleCartItems,
@@ -18,10 +18,11 @@ function Cart() {
   const { items } = useAppSelector((store) => store.cart);
 
   //redirecting towards check out page with the selected items
-  const router=useRouter()
+  const router = useRouter();
   const handleCheckout = () => {
     // use selectedItems if available, else all items
-    const checkoutItems = selectedItems.length > 0 ? selectedItems : items.map(item => item.id);
+    const checkoutItems =
+      selectedItems.length > 0 ? selectedItems : items.map((item) => item.id);
     const queryParam = checkoutItems.join(",");
 
     router.push(`/check-out?items=${queryParam}`);
@@ -33,12 +34,15 @@ function Cart() {
   // multiple deleting by selecting
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   //quantity updating
-  const handleQuantityChange = (cartItemId: string, delta: number, currentQty: number) => {
-    const newQty = currentQty + delta;      // +1 or -1
-    if (newQty < 1) return;                 // minimum quantity check
+  const handleQuantityChange = (
+    cartItemId: string,
+    delta: number,
+    currentQty: number
+  ) => {
+    const newQty = currentQty + delta; // +1 or -1
+    if (newQty < 1) return; // minimum quantity check
     dispatch(updateCartItemQuantity(cartItemId, newQty));
   };
-
 
   useEffect(() => {
     dispatch(fetchCartItems());
@@ -123,7 +127,9 @@ function Cart() {
                     if (e.target.checked) {
                       setSelectedItems([...selectedItems, i.id!]);
                     } else {
-                      setSelectedItems(selectedItems.filter((id) => id !== i.id));
+                      setSelectedItems(
+                        selectedItems.filter((id) => id !== i.id)
+                      );
                     }
                   }}
                   className="absolute top-10 right-3"
@@ -132,7 +138,10 @@ function Cart() {
                 {/* Product Info */}
                 <div className="flex items-start gap-4 flex-1">
                   <img
-                    src={(i.product?.productImage as string) || "https://via.placeholder.com/150"}
+                    src={
+                      (i.product?.productImage as string) ||
+                      "https://via.placeholder.com/150"
+                    }
                     alt={i.product?.productName || "Deleted Product"}
                     className="h-20 w-20 rounded-md object-cover"
                   />
@@ -141,7 +150,8 @@ function Cart() {
                       {i.product?.productName || "Deleted Product"}
                     </h3>
                     <p className="text-sm text-gray-200">
-                      {i.product?.productDescription || "No description available."}
+                      {i.product?.productDescription ||
+                        "No description available."}
                     </p>
                     <p className="text-sm font-medium mt-1">
                       Rs. {i.product?.productPrice || "0"}
@@ -153,18 +163,29 @@ function Cart() {
                 <div className="flex flex-col justify-start items-end gap-2 mr-6">
                   {/* Quantity Selector */}
                   <div className="flex items-center bg-gray-200 text-black rounded-full px-2 py-1">
-                    <button onClick={() => handleQuantityChange(i.id!, -1, i.quantity)} className="text-sm px-2 py-1 rounded-full hover:bg-gray-300">
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(i.id!, -1, i.quantity)
+                      }
+                      className="text-sm px-2 py-1 rounded-full hover:bg-gray-300"
+                    >
                       -
                     </button>
                     <span className="px-3 text-sm">{i.quantity}</span>
-                    <button onClick={() => handleQuantityChange(i.id!, 1, i.quantity)} className="text-sm px-2 py-1 rounded-full hover:bg-gray-300">
+                    <button
+                      onClick={() => handleQuantityChange(i.id!, 1, i.quantity)}
+                      className="text-sm px-2 py-1 rounded-full hover:bg-gray-300"
+                    >
                       +
                     </button>
                   </div>
 
                   {/* Total Price */}
                   <div className="font-semibold">
-                    Rs. {(Number(i.product?.productPrice || 0) * i.quantity).toFixed(2)}
+                    Rs.{" "}
+                    {(
+                      Number(i.product?.productPrice || 0) * i.quantity
+                    ).toFixed(2)}
                   </div>
                 </div>
               </div>
@@ -198,7 +219,7 @@ function Cart() {
                 className="bg-[#001f3f] text-white py-2 px-4 rounded-lg mt-3 w-full hover:bg-[#003366] transition"
               >
                 Checkout
-              </button>  
+              </button>
             </div>
           </div>
         </div>

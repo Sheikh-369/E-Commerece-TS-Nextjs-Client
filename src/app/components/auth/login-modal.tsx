@@ -3,7 +3,7 @@
 
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Status } from "@/lib/global-type/type";
-import { useAppDispatch, useAppSelector } from "@/lib/store/auth/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { IUserData } from "@/lib/store/auth/auth-slice-type";
 import { userLogin } from "@/lib/store/auth/auth-slice";
 
@@ -104,7 +104,9 @@ const LoginModal: React.FC<AuthModalProps> = ({
           </button>
 
           {loginStatus === Status.SUCCESS && (
-            <p className="text-green-600 text-sm text-center">Login successful!</p>
+            <p className="text-green-600 text-sm text-center">
+              Login successful!
+            </p>
           )}
           {loginStatus === Status.ERROR && (
             <p className="text-red-600 text-sm text-center">
