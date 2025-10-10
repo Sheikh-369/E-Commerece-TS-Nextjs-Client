@@ -170,6 +170,49 @@ export function updateProduct(productData: IProductData, id: string) {
     }
   };
 }
+// export function updateProduct(productData: IProductData, id: string) {
+//   return async function updateProductThunk(dispatch: AppDispatch) {
+//     dispatch(setStatus(Status.LOADING));
+//     try {
+//       const formData = new FormData();
+
+//       // Append all fields except image
+//       formData.append("productName", productData.productName);
+//       formData.append("productDescription", productData.productDescription || "");
+//       formData.append("productPrice", productData.productPrice.toString());
+//       formData.append("oldPrice", productData.oldPrice?.toString() || "0");
+//       formData.append("productTotalStock", productData.productTotalStock.toString());
+//       formData.append("productDiscount", productData.productDiscount.toString());
+//       formData.append("isFeatured", productData.isFeatured ? "true" : "false");
+
+//       if (productData.categoryId) {
+//         formData.append("categoryId", productData.categoryId);
+//       }
+
+//       // Append image ONLY IF it's a File (i.e., user selected a new one)
+//       if (productData.productImage instanceof File) {
+//         formData.append("productImage", productData.productImage);
+//       }
+
+//       const response = await APIWITHTOKEN.patch(`product/${id}`, formData, {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       });
+
+//       if (response.status === 200 || response.status === 201) {
+//         dispatch(setStatus(Status.SUCCESS));
+//         dispatch(fetchProducts());
+//       } else {
+//         dispatch(setStatus(Status.ERROR));
+//       }
+//     } catch (error) {
+//       console.error(error);
+//       dispatch(setStatus(Status.ERROR));
+//     }
+//   };
+// }
+
 
 //delete product
 export function deleteProduct(id: string) {

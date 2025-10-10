@@ -32,6 +32,7 @@ export default function AddCategoryModal({
   const handleDataSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(addCategory(categoryData));
+    setCategoryData({ categoryName: "", categoryDescription: "" });//form add vaisakeko data lai feri nadekhauna ko lgi
     onClose(); // close only, no reset
   };
 
@@ -60,7 +61,7 @@ export default function AddCategoryModal({
               value={categoryData.categoryDescription}
               onChange={handleDataChange}
               required
-              className="mt-1 w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full max-w-full resize-y p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="flex justify-end gap-3">

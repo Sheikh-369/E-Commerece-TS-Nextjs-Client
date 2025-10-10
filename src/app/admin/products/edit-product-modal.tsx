@@ -22,33 +22,13 @@ const EditProductModal: React.FC<Props> = ({ product, closeModal }) => {
     productTotalStock: product.productTotalStock,
     productDiscount: product.productDiscount,
     productImage: product.productImage,
+    categoryId: product.categoryId ?? "",
     category: product.category
       ? { categoryName: product.category.categoryName }
       : undefined,
       isFeatured:product.isFeatured
   });
 
-  // const handleChange = (
-  //   e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  // ) => {
-  //   const { name, value } = e.target;
-
-  //   if (
-  //     name === "productImage" &&
-  //     e.target instanceof HTMLInputElement &&
-  //     e.target.files
-  //   ) {
-  //     setProductData({
-  //       ...productData,
-  //       productImage: e.target.files[0], // File upload
-  //     });
-  //   } else {
-  //     setProductData({
-  //       ...productData,
-  //       [name]: value,
-  //     });
-  //   }
-  // };
     const handleChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       ) => {
@@ -189,20 +169,15 @@ const EditProductModal: React.FC<Props> = ({ product, closeModal }) => {
                 Mark as Featured Product
               </label>
             </div>
-
+            {/* Image preview */} 
+            {typeof productData.productImage === "string" && productData.productImage && ( <img src={productData.productImage} alt="Current product" className="w-22 h-22 object-cover mb-2 rounded" /> )}
             {/* Image */}
             <input
               type="file"
               name="productImage"
               accept="image/*"
               className="w-full"
-              onChange={(e) => {
-                const file = e.target.files?.[0] || null;
-                setProductData((prev) => ({
-                  ...prev,
-                  productImage: file,
-                }));
-              }}
+              onChange={handleChange}
             />
 
             {/* Actions */}

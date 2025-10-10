@@ -35,7 +35,7 @@ function CAtegories() {
 
   // Pagination logic
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 10; // rows per page
+  const pageSize = 15; // rows per page
   const totalPages = Math.ceil(filteredData.length / pageSize);
 
   const paginatedData = filteredData.slice(
@@ -161,7 +161,7 @@ function CAtegories() {
                       <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
                         {c.categoryName}
                       </td>
-                      <td className="px-2 py-1 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                      <td className="px-2 py-1 whitespace-normal break-words max-w-xs text-sm leading-6 font-medium text-gray-900">
                         {" "}
                         {c.categoryDescription}{" "}
                       </td>

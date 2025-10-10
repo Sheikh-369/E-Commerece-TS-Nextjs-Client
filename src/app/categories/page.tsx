@@ -7,6 +7,8 @@ import Drinks from '../components/categories/drinks/drinks';
 import Electronics from '../components/categories/electronics/electronics';
 import Clothing from '../components/categories/clothing/clothing';
 import Groceries from '../components/categories/groceries/groceries';
+import HomeEssentials from '../components/categories/home essentials/home-essentials';
+import Fashion from '../components/categories/fashion/fashion';
 
 function Categories() {
   return (
@@ -17,7 +19,8 @@ function Categories() {
         <Electronics/>
         <Clothing/>
         <Groceries/>
-      
+        <HomeEssentials/>
+        <Fashion/>
     </main>
   );
 }

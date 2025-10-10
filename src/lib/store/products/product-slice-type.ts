@@ -11,6 +11,7 @@ export interface IProductData {
   productImage?:File | string | null;
   categoryId?:string,
   category?:{
+    id?:string,
     categoryName:string
   },
   deletedAt?:string | null,
