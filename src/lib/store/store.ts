@@ -4,6 +4,7 @@ import productSlice from "../store/products/product-slice"
 import usersSlice from "../store/user/user-slice"
 import categorySlice from "../store/category/category-slice"
 import cartSlice from "../store/cart/cart-slice"
+import checkoutSlice from "../store/check-out/check-out-slice"
 
 
 const store=configureStore({
@@ -12,7 +13,8 @@ const store=configureStore({
         product:productSlice,
         users:usersSlice,
         categories:categorySlice,
-        cart:cartSlice
+        cart:cartSlice,
+        checkout:checkoutSlice
     }
 })
 
