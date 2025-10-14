@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUserData, IUserSliceState } from "./auth-slice-type";
+import {
+  IUserData,
+  IUserSliceState,
+  IAuthFormData,
+  IAuthResponse,
+} from "./auth-slice-type";
 import { Status } from "@/lib/global-type/type";
 import { AppDispatch } from "../store";
 import API from "@/lib/http/API";
@@ -19,28 +24,27 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser(state:IUserSliceState, action: PayloadAction<IUserData | null>) {
+    setUser(state: IUserSliceState, action: PayloadAction<IUserData | null>) {
       state.user = action.payload;
       state.isLoaded = true; // Mark that auth is ready
     },
-    
+
     setLoginStatus(state, action: PayloadAction<Status>) {
       state.loginStatus = action.payload;
     },
-    
+
     setRegisterStatus(state, action: PayloadAction<Status>) {
       state.registerStatus = action.payload;
     },
-    
+
     setForgotPasswordStatus(state, action: PayloadAction<Status>) {
       state.forgotPasswordStatus = action.payload;
     },
-    
+
     setResetPasswordStatus(state, action: PayloadAction<Status>) {
       state.resetPasswordStatus = action.payload;
     },
-    
-  }
+  },
 });
 
 // Action Creators
@@ -61,16 +65,15 @@ export function loadUserFromStorage() {
   return function (dispatch: AppDispatch) {
     const token = localStorage.getItem("token");
     if (token) {
-      dispatch(setUser({ userEmail: "", token })); // optionally fetch full user info from server
+      dispatch(setUser({ id: "temp", email: "", userEmail: "", token })); // optionally fetch full user info from server
     } else {
       dispatch(setUser(null));
     }
   };
 }
 
-
 // Register
-export function userRegister(userRegisterData: IUserData) {
+export function userRegister(userRegisterData: IAuthFormData) {
   return async function (dispatch: AppDispatch) {
     dispatch(setRegisterStatus(Status.LOADING));
     try {
@@ -88,7 +91,7 @@ export function userRegister(userRegisterData: IUserData) {
 }
 
 //Login
-export function userLogin(userLoginData: IUserData) {
+export function userLogin(userLoginData: IAuthFormData) {
   return async function (dispatch: AppDispatch) {
     dispatch(setLoginStatus(Status.LOADING));
     try {
@@ -97,10 +100,14 @@ export function userLogin(userLoginData: IUserData) {
         const token = response.data.token;
         localStorage.setItem("token", token);
 
-        dispatch(setUser({
-          userEmail: userLoginData.userEmail,
-          token,
-        }));
+        dispatch(
+          setUser({
+            id: "temp",
+            email: userLoginData.userEmail || "",
+            userEmail: userLoginData.userEmail,
+            token,
+          })
+        );
 
         dispatch(setLoginStatus(Status.SUCCESS));
       } else {
@@ -126,11 +133,14 @@ export function userLogout() {
 }
 
 //Forgot Password
-export function forgotPassword(forgotPasswordData: IUserData) {
+export function forgotPassword(forgotPasswordData: IAuthFormData) {
   return async function (dispatch: AppDispatch) {
     dispatch(setForgotPasswordStatus(Status.LOADING));
     try {
-      const response = await API.post("auth/forgot-password", forgotPasswordData);
+      const response = await API.post(
+        "auth/forgot-password",
+        forgotPasswordData
+      );
       if (response.status === 200) {
         dispatch(setForgotPasswordStatus(Status.SUCCESS));
       } else {
@@ -144,7 +154,7 @@ export function forgotPassword(forgotPasswordData: IUserData) {
 }
 
 //Reset Password
-export function resetPassword(resetPasswordData: IUserData) {
+export function resetPassword(resetPasswordData: IAuthFormData) {
   return async function (dispatch: AppDispatch) {
     dispatch(setResetPasswordStatus(Status.LOADING));
     try {

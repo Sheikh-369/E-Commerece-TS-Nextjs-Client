@@ -198,7 +198,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { fetchProducts } from "@/lib/store/products/product-slice";
 import { Status } from "@/lib/global-type/type";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AddToCartButton from "../components/common/add-to-cart-buutton";
 import Carousel from "../components/products/carousal/carsoul";
 import ProductsIntro from "../components/products/products-heading/products-heading";
@@ -210,16 +210,34 @@ export default function Products() {
   const [errorToast, setErrorToast] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 60; // 10 rows * 6 items
+  //for global search
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
+
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const totalPages = Math.ceil(products.length / productsPerPage);
-  const paginatedProducts = products.slice(
+  // const totalPages = Math.ceil(products.length / productsPerPage);
+  // const paginatedProducts = products.slice(
+  //   (currentPage - 1) * productsPerPage,
+  //   currentPage * productsPerPage
+  // );
+
+  //global search with pagination
+  const filteredProducts = searchQuery
+    ? products.filter(product =>
+        product.productName.toLowerCase().includes(searchQuery)
+      )
+    : products;
+
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
+
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -256,6 +274,12 @@ export default function Products() {
 
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 mt-7">
         <ProductsIntro />
+        {/* Search heading */}
+        {searchQuery && (
+            <p className="text-sm text-gray-600 mb-4">
+              Showing results for: <span className="font-medium">{searchQuery}</span>
+            </p>
+          )}
 
         {/* Product Grid */}
         <section

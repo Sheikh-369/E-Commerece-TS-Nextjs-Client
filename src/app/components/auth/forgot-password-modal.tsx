@@ -2,7 +2,7 @@
 
 import { Status } from "@/lib/global-type/type";
 import { forgotPassword } from "@/lib/store/auth/auth-slice";
-import { IUserData } from "@/lib/store/auth/auth-slice-type";
+import { IAuthFormData } from "@/lib/store/auth/auth-slice-type";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
 
@@ -20,7 +20,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   const dispatch = useAppDispatch();
   const { forgotPasswordStatus } = useAppSelector((store) => store.auth);
 
-  const [forgotPasswordData, setForgotPasswordData] = useState<IUserData>({
+  const [forgotPasswordData, setForgotPasswordData] = useState<IAuthFormData>({
     userEmail: "",
   });
 

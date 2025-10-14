@@ -3,7 +3,7 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Status } from "@/lib/global-type/type";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
-import { IUserData } from "@/lib/store/auth/auth-slice-type";
+import { IAuthFormData } from "@/lib/store/auth/auth-slice-type";
 import { userRegister } from "@/lib/store/auth/auth-slice";
 
 interface AuthModalProps {
@@ -18,7 +18,7 @@ const RegisterModal: React.FC<AuthModalProps> = ({
   const dispatch = useAppDispatch();
   const { registerStatus } = useAppSelector((store) => store.auth);
 
-  const [userRegisterData, setUserRegisterData] = useState<IUserData>({
+  const [userRegisterData, setUserRegisterData] = useState<IAuthFormData>({
     userName: "",
     userEmail: "",
     userPassword: "",

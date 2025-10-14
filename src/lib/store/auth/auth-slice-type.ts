@@ -1,21 +1,37 @@
-import { Status } from "@/lib/global-type/type"
+import { Status } from "@/lib/global-type/type";
 
-export interface IUserData{
-    id?:string,
-    userName?:string,
-    userEmail:string,
-    userPhoneNumber?:string,
-    userPassword?:string,
-    token?:string,
-    OTP?:number | string,
-    newPassword?:string
+export interface IUserData {
+  id: string;
+  email: string;
+  name?: string;
+  userEmail?: string;
+  userName?: string;
+  userPassword?: string;
+  userPhoneNumber?: string;
+  token?: string;
+  OTP?: string;
+  newPassword?: string;
+  avatar_url?: string;
 }
 
-export interface IUserSliceState{
-    user:IUserData |null,
-     isLoaded: boolean; // NEW
-    loginStatus: Status;
-    registerStatus: Status;
-    forgotPasswordStatus: Status;
-    resetPasswordStatus: Status;
+export interface IAuthFormData {
+  userEmail: string;
+  userName?: string;
+  userPassword?: string;
+  userPhoneNumber?: string;
+  OTP?: string;
+  newPassword?: string;
+}
+
+export interface IAuthResponse extends Partial<IUserData> {
+  token: string;
+}
+
+export interface IUserSliceState {
+  user: IUserData | null;
+  isLoaded: boolean; // NEW
+  loginStatus: Status;
+  registerStatus: Status;
+  forgotPasswordStatus: Status;
+  resetPasswordStatus: Status;
 }
