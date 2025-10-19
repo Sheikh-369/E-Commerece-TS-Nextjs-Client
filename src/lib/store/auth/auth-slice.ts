@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   IUserData,
   IUserSliceState,
@@ -119,6 +120,7 @@ export function userLogin(userLoginData: IAuthFormData) {
     }
   };
 }
+
 
 //Logout
 export function userLogout() {

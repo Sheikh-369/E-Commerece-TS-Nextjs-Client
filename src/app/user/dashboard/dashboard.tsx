@@ -1,3 +1,5 @@
+'use client'
+import Link from "next/link";
 import React from "react";
 
 function UserDashboard({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -60,8 +62,8 @@ function UserDashboard({ children }: Readonly<{ children: React.ReactNode }>) {
             </a>
 
             {/* Orders */}
-            <a
-              href="#"
+            <Link
+              href="/user/dashboard/my-orders"
               className="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white"
             >
               <svg className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,7 +73,7 @@ function UserDashboard({ children }: Readonly<{ children: React.ReactNode }>) {
                 />
               </svg>
               Orders
-            </a>
+            </Link>
 
             {/* Wishlist */}
             <a

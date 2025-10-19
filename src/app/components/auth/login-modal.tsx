@@ -6,8 +6,6 @@ import { Status } from "@/lib/global-type/type";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { IUserData, IAuthFormData } from "@/lib/store/auth/auth-slice-type";
 import { userLogin } from "@/lib/store/auth/auth-slice";
-import { supabase } from "@/lib/supabaseClient";
-
 interface AuthModalProps {
   onClose: () => void;
   onSwitchToRegister: () => void;
@@ -23,13 +21,13 @@ const LoginModal: React.FC<AuthModalProps> = ({
   const { loginStatus } = useAppSelector((store) => store.auth);
 
   interface LoginFormData {
-    email: string;
-    password: string;
+    userEmail: string;
+    userPassword: string;
   }
 
   const [userLoginData, setUserLoginData] = useState<LoginFormData>({
-    email: "",
-    password: "",
+    userEmail: "",
+    userPassword: "",
   });
 
   const [error, setError] = useState("");
@@ -42,50 +40,24 @@ const LoginModal: React.FC<AuthModalProps> = ({
     }));
   };
 
+  // Google sign-in will be implemented later
   const handleGoogleSignIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-      onClose(); // Close the modal after initiating OAuth
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-      setError("Failed to sign in with Google. Please try again.");
-    }
+    setError("Google sign-in is not available yet.");
   };
 
   const handleLoginDataSubmission = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { email, password } = userLoginData;
+    const { userEmail, userPassword } = userLoginData;
 
-    if (!email || !password) {
+    if (!userEmail || !userPassword) {
       setError("Email and password are required");
       return;
     }
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        setError(error.message);
-        return;
-      }
-
-      if (data.user) {
-        const userData: IAuthFormData = {
-          userEmail: data.user.email || "",
-        };
-        dispatch(userLogin(userData));
-        onClose();
-      }
+      dispatch(userLogin(userLoginData));
+      onClose();
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
     }
@@ -165,9 +137,9 @@ const LoginModal: React.FC<AuthModalProps> = ({
           <div className="space-y-1">
             <input
               type="email"
-              name="email"
+              name="userEmail"
               placeholder="Email"
-              value={userLoginData.email}
+              value={userLoginData.userEmail}
               onChange={handleLoginData}
               className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
             />
@@ -175,9 +147,9 @@ const LoginModal: React.FC<AuthModalProps> = ({
           <div className="space-y-1">
             <input
               type="password"
-              name="password"
+              name="userPassword"
               placeholder="Password"
-              value={userLoginData.password}
+              value={userLoginData.userPassword}
               onChange={handleLoginData}
               className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
             />
