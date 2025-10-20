@@ -6,6 +6,7 @@ import APIWITHTOKEN from "@/lib/http/API-with-token";
 
 const initialState:IMyOrdersSliceState={
     orders:null,
+    selectedOrder: null,
     status:Status.IDLE
 }
 
@@ -17,13 +18,17 @@ const myOrderSlice=createSlice({
             state.orders=action.payload
         },
 
+        setSelectedOrder(state, action: PayloadAction<IMyOrdersData>) {
+            state.selectedOrder = action.payload;
+        },
+
         setStatus(state:IMyOrdersSliceState,action:PayloadAction<Status>){
             state.status=action.payload
         }
     }
 })
 
-export const{setOrders,setStatus}=myOrderSlice.actions
+export const{setOrders,setStatus,setSelectedOrder}=myOrderSlice.actions
 export default myOrderSlice.reducer
 
 //fetch my orders
@@ -43,4 +48,24 @@ export function myOrders(){
             dispatch(setStatus(Status.ERROR))
         }
     }
+}
+
+//fetch by id
+export function fetchOrderById(orderId: string) {
+  return async function (dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIWITHTOKEN.get(`/my-orders/${orderId}`);
+
+      if (response.status === 200) {
+        dispatch(setSelectedOrder(response.data.data)); // ✅ Use correct action
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (err: any) {
+      console.error("Order fetch failed:", err);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
 }

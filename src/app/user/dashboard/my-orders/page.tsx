@@ -4,10 +4,12 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { myOrders } from "@/lib/store/user/my-orders/my-orders-slice";
 import { Status } from "@/lib/global-type/type";
+import { useRouter } from "next/navigation";
 
 const MyOrders: React.FC = () => {
   const dispatch = useAppDispatch();
   const { orders, status } = useAppSelector((state) => state.myOrders);
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(myOrders());
@@ -38,7 +40,7 @@ const MyOrders: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+    <div className="bg-sky-100 max-w-6xl mx-auto px-4 py-10 space-y-10">
       {orders.map((order, orderIndex) => (
         <div
           key={order.id}
@@ -111,7 +113,7 @@ const MyOrders: React.FC = () => {
           <div className="mt-5 flex justify-end">
             <button
               className="text-sm text-indigo-600 hover:text-indigo-800 hover:underline font-medium transition"
-              onClick={() => console.log("View Order Details")}
+              onClick={() => router.push(`/user/dashboard/my-orders/${order.id}`)}
             >
               View Order Details →
             </button>

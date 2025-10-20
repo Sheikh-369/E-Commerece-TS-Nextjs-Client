@@ -90,8 +90,8 @@ function UserDashboard({ children }: Readonly<{ children: React.ReactNode }>) {
             </a>
 
             {/* Cart */}
-            <a
-              href="#"
+            <Link
+              href="/user/dashboard/cart"
               className="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white"
             >
               <svg className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,7 +101,7 @@ function UserDashboard({ children }: Readonly<{ children: React.ReactNode }>) {
                 />
               </svg>
               Cart
-            </a>
+            </Link>
 
             {/* Messages */}
             <a
@@ -192,9 +192,9 @@ function UserDashboard({ children }: Readonly<{ children: React.ReactNode }>) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 bg-gray-100 overflow-y-auto">
+      <main className="flex-1 p-6 bg-sky-200 overflow-y-auto">
         <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-        <div className="mt-4 p-6 bg-white rounded-lg shadow-md">{children}</div>
+        <div className="mt-4 p-6 bg-sky-100 rounded-lg shadow-md">{children}</div>
       </main>
     </div>
   );

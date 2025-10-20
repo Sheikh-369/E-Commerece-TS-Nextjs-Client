@@ -1,7 +1,7 @@
 import { Status } from "@/lib/global-type/type";
 
 export interface IMyOrdersData {
-  id: string;
+  id?: string;
   totalAmount: number;
   createdAt: string;
   payment: {
@@ -20,5 +20,6 @@ export interface IMyOrdersData {
 
 export interface IMyOrdersSliceState {
   orders: IMyOrdersData[] | null;
+  selectedOrder: IMyOrdersData | null;
   status:Status
 }

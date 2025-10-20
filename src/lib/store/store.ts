@@ -7,7 +7,6 @@ import cartSlice from "../store/cart/cart-slice"
 import checkoutSlice from "../store/check-out/check-out-slice"
 import myOrdersSlice from "../store/user/my-orders/my-orders-slice"
 
-
 const store=configureStore({
     reducer:{
         auth:authSlice,
