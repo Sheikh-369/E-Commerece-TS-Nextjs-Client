@@ -69,3 +69,24 @@ export function fetchOrderById(orderId: string) {
     }
   };
 }
+
+// cancelOrder
+export function cancelOrder(orderId: string) {
+  return async function (dispatch: AppDispatch) {
+    try {
+      const response = await APIWITHTOKEN.patch(`/order/${orderId}/cancel`);
+
+      if (response.status === 200) {
+        // Refresh orders after cancellation
+        dispatch(myOrders());
+        return { success: true, message: response.data.message };
+      } else {
+        return { success: false, message: response.data.message || "Cancellation failed" };
+      }
+    } catch (error: any) {
+      console.error("Cancel order error:", error);
+      return { success: false, message: "Something went wrong" };
+    }
+  };
+}
+

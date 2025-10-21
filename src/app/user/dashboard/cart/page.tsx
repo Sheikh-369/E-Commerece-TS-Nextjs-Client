@@ -19,6 +19,7 @@ function Cart() {
 
   //redirecting towards check out page with the selected items
   const router = useRouter();
+  
   const handleCheckout = () => {
     // use selectedItems if available, else all items
     const checkoutItems =

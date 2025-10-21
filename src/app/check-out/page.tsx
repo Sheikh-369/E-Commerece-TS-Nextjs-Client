@@ -9,11 +9,13 @@ import {
 } from "@/lib/store/check-out/check-out-slice-type";
 import { ICartItem } from "@/lib/store/cart/cart-slice-type";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 function CheckOutContent() {
   const dispatch = useAppDispatch();
   const { items } = useAppSelector((store) => store.cart);
+  const router = useRouter();
   //for khalti integration logic
   const{khaltiUrl}=useAppSelector((store)=>store.checkout)
 
@@ -84,6 +86,8 @@ function CheckOutContent() {
     };
 
     await dispatch(createAnOrder(finalData));
+
+
   };
 
   useEffect(() => {

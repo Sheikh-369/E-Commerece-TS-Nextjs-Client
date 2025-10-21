@@ -4,7 +4,6 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Status } from "@/lib/global-type/type";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
-import { IUserData, IAuthFormData } from "@/lib/store/auth/auth-slice-type";
 import { userLogin } from "@/lib/store/auth/auth-slice";
 interface AuthModalProps {
   onClose: () => void;

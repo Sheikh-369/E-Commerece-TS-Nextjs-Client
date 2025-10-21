@@ -1,9 +1,10 @@
 import { Status } from "@/lib/global-type/type";
 
 export interface IMyOrdersData {
-  id?: string;
+  id: string;
   totalAmount: number;
   createdAt: string;
+  orderStatus: "pending" | "preparing" | "ontheway" | "cancelled" | "delivered";
   payment: {
     paymentStatus: "Paid" | "Pending";
   };
